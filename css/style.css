@@ -80,6 +80,8 @@ body {
 
 
 
+
+
 Character class and IDs */
 
 .character {
@@ -119,35 +121,45 @@ Character class and IDs */
 
 
 
+
+
+
+
 NPC content */
 
-.soldier1 {
+.soldier {
   width: calc(var(--grid-cell) * 1);
   height: calc(var(--grid-cell) * 1);
   position: absolute;
   overflow: hidden;
 }
 
-.soldier1SpriteSheet {
-  background: url(/img/characters/Soldier1.png) no-repeat no-repeat;
+.soldierSpriteSheet {
   position: absolute;
-  background-size: 100%;
   width: calc(var(--grid-cell) * 4);
   height: calc(var(--grid-cell) * 4);
+}
+
+.soldier1 {
+  visibility: visible;
+}
+
+.soldier1SpriteSheet {
+  background: url(/img/characters/soldier1.png) no-repeat no-repeat;
+  background-size: 100%;
   animation: animate 0.5s steps(4) infinite;
 }
 
-.soldier1[facing="right"] .soldier1SpriteSheet {
-  background-position-y: calc(var(--pixel-size) * -16);
+.soldier2 {
+  visibility: visible;
 }
 
-.soldier1[facing="up"] .soldier1SpriteSheet {
-  background-position-y: calc(var(--pixel-size) * -32);
+.soldier2SpriteSheet {
+  background: url(/img/characters/soldier2.png) no-repeat no-repeat;
+  background-size: 100%;
+  animation: animate 0.6s steps(4) infinite;
 }
 
-.soldier1[facing="left"] .soldier1SpriteSheet {
-  background-position-y: calc(var(--pixel-size) * -48);
-}
 
 .tuber {
   overflow: hidden;
@@ -189,6 +201,8 @@ NPC content */
 
 
 
+
+
 Flag class and ID */
 
 .armyFlag {
@@ -222,6 +236,8 @@ Flag class and ID */
 }
 
 /*
+
+
 
 
 
@@ -295,6 +311,7 @@ Sign class and IDs */
 
 
 
+
 Clock timer class and ID */
 
 .numbers {
@@ -350,6 +367,8 @@ Clock timer class and ID */
 
 
 
+
+
 River sprite sheet */
 
 #river {
@@ -365,6 +384,8 @@ River sprite sheet */
 }
 
 /*
+
+
 
 
 

@@ -2,8 +2,9 @@
 const map = document.querySelector(".map");
 const character = document.querySelector(".character");
 
-var speed = 0.75; // Speed of player character movement in px/frame
-const runnerSpeed = 0.25;
+const speed = 0.5; // Speed of player character movement in px/frame
+const runnerSpeed = 0.1;
+const floatSpeed = 1.2;
 
 //
 //
@@ -47,7 +48,6 @@ function Tuber (tuberClass, tuberSheet) {
     var currentBG;
     var bgNum = 0;
     var count = 0;
-    var floatSpeed = 1;
 
     // Func to float the toooober down left
     this.float = function () {
@@ -84,9 +84,6 @@ function Tuber (tuberClass, tuberSheet) {
         this.tuberClass.style.transform = `translate3d( ${this.x * px}px, ${this.y * px}px, 0)`;
 
     }
-        
-        
-        
 }
     
 // Create the tuber objects
@@ -105,81 +102,115 @@ let tuber2Obj = new Tuber(tuber2Class, tuber2Sheet);
 //
 //
 //
-    
+
 // Soldier/Runner on track
-const runner1 = document.querySelector(".soldier1");
+const runner1Class = document.querySelector(".soldier1");
+const runner1SpriteSheet = document.querySelector(".soldier1SpriteSheet");
 
-// State of runners
-var runner1x = 185;
-var runner1y = 800;
+const runner2Class = document.querySelector(".soldier2");
+const runner2SpriteSheet = document.querySelector(".soldier2SpriteSheet");
 
-const runNPCs = () => {
 
-    // Get the pixel size each iteration to ensure the most accurate value is available
-    var pixelSize = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--pixel-size'));
-
+// Create the runner class
+function Runner (runnerClass, runnerSpriteSheet, x, y) {
+    this.class = runnerClass;
+    this.spriteSheet = runnerSpriteSheet;
+    
+    // State of runners (X and Y pos)
+    this.x = x;
+    this.y = y;
+    
+    // Set the Sprite Sheet pxs to direction 
+    var up = -32;
+    var runnerDown = 0;
+    var left = -48;
+    var right = -16;
+    
+    var px;
+    
+    // Set their running limits
     // Left and right sides of the track
     var runnerLeftLimit = 44;
     var runnerRightLimit = 180;
-
+    
     // Top of the track before the curve
     var runnerTopLimit = 810;
     var runnerBottomLimit = 1000;
-
+    
     // Top of the track curve
     var runnerCurveTop = 770;
     var runnerCurveBottom = 1040;
-
+    
     // Left and right sides of the top of the track curve
     var runnerMidRight = 140;
     var runnerMidLeft = 84;
-
-    // 1 to 2 to 3 (Top Left and Top Middle)
-    if (runner1y >= runnerCurveTop && runner1x < runnerMidRight && runner1x >= runnerLeftLimit && runner1y <= runnerTopLimit) {
-        runner1x += runnerSpeed;
-        runner1y -= runnerSpeed; // Going north east
-        runner1.setAttribute("facing", "right");
+    
+    
+    // Make them run
+    this.run = function () {
+        
+        // Get the pixel size each iteration to ensure the most accurate value is available
+        px = getPixelSize();
+        
+        
+        // Check their x and y pos
+        // 1 to 2 to 3 (Top Left and Top Middle)
+        if (this.y >= runnerCurveTop && this.x < runnerMidRight && this.x >= runnerLeftLimit && this.y <= runnerTopLimit) {
+            this.x += runnerSpeed;
+            this.y -= runnerSpeed; // Going north east
+            this.spriteSheet.style.setProperty("background-position-y", `${right * px}px`);
+        }
+        
+        // 3 to 4 (Top Middle and Top Right)
+        if (this.y >= runnerCurveTop && this.x >= runnerMidRight && this.x < runnerRightLimit && this.y < runnerTopLimit) {
+            this.x += runnerSpeed;
+            this.y += runnerSpeed; // Going south east
+        }
+        
+        // 4 to 5 (Right)
+        if (this.x == runnerRightLimit && this.y < runnerBottomLimit) {
+            this.y += runnerSpeed; // Going south
+            this.spriteSheet.style.setProperty("background-position-y", `${runnerDown * px}px`);
+        }
+        
+        // 5 to 6 to 7 (Bottom Right and Bottom Middle)
+        if (this.y <= runnerCurveBottom && this.y >= runnerBottomLimit && this.x <= runnerRightLimit && this.x > runnerMidLeft) {
+            this.x -= runnerSpeed;
+            this.y += runnerSpeed; // Going south west
+            this.spriteSheet.style.setProperty("background-position-y", `${left * px}px`);
+        }
+        
+        // 6 to 7 (Bottom Middle and Bottom Left)
+        if (this.y <= runnerCurveBottom && this.y >= runnerBottomLimit && this.x >= runnerLeftLimit && this.x <= runnerMidLeft) {
+            this.x -= runnerSpeed;
+            this.y -= runnerSpeed; // Going north west
+        }
+        
+        // 7 to 8 (Left)
+        if (this.x == runnerLeftLimit && this.y >= runnerTopLimit) {
+            this.y -= runnerSpeed; // Going north
+            this.spriteSheet.style.setProperty("background-position-y", `${up * px}px`);
+        }
+        
+        // Clamp their running
+        if (this.x < runnerLeftLimit) { this.x = runnerLeftLimit; }
+        if (this.x > runnerRightLimit) { this.x = runnerRightLimit; }
+        if (this.y < runnerCurveTop) { this.y = runnerCurveTop; }
+        if (this.y > runnerCurveBottom) { this.y = runnerCurveBottom; }
+        
+        // Set their positions
+        this.class.style.transform = `translate3d( ${this.x * pixelSize}px, ${this.y * pixelSize}px, 0)`;
     }
-
-    // 3 to 4 (Top Middle and Top Right)
-    if (runner1y >= runnerCurveTop && runner1x >= runnerMidRight && runner1x < runnerRightLimit && runner1y < runnerTopLimit) {
-        runner1x += runnerSpeed;
-        runner1y += runnerSpeed; // Going south east
-    }
-
-    // 4 to 5 (Right)
-    if (runner1x == runnerRightLimit && runner1y < runnerBottomLimit) {
-        runner1y += runnerSpeed; // Going south
-        runner1.setAttribute("facing", "down");
-    }
-
-    // 5 to 6 to 7 (Bottom Right and Bottom Middle)
-    if (runner1y <= runnerCurveBottom && runner1y >= runnerBottomLimit && runner1x <= runnerRightLimit && runner1x > runnerMidLeft) {
-        runner1x -= runnerSpeed;
-        runner1y += runnerSpeed; // Going south west
-        runner1.setAttribute("facing", "left");
-    }
-
-    // 6 to 7 (Bottom Middle and Bottom Left)
-    if (runner1y <= runnerCurveBottom && runner1y >= runnerBottomLimit && runner1x >= runnerLeftLimit && runner1x <= runnerMidLeft) {
-        runner1x -= runnerSpeed;
-        runner1y -= runnerSpeed; // Going north west
-    }
-
-    // 7 to 8 (Left)
-    if (runner1x == runnerLeftLimit && runner1y >= runnerTopLimit) {
-        runner1y -= runnerSpeed; // Going north
-        runner1.setAttribute("facing", "up");
-    }
-
-    // Keep runner within limits
-    if (runner1x < runnerLeftLimit) { runner1x = runnerLeftLimit; }
-    if (runner1x > runnerRightLimit) { runner1x = runnerRightLimit; }
-    if (runner1y < runnerCurveTop) { runner1y = runnerCurveTop; }
-    if (runner1y > runnerCurveBottom) { runner1y = runnerCurveBottom; }
-
-    runner1.style.transform = `translate3d( ${runner1x * pixelSize}px, ${runner1y * pixelSize}px, 0)`;
+    
+    
+    
+    
 }
+
+
+// Create the runner objects
+let runner1Obj = new Runner(runner1Class, runner1SpriteSheet, 180, 850);
+let runner2Obj = new Runner(runner2Class, runner2SpriteSheet, 180, 810);
 
 //
 //
@@ -283,9 +314,10 @@ document.addEventListener("keyup", (e) => {
 
 const step = () => {
     placeCharacter();
-    runNPCs();
     tuber1Obj.float();
     tuber2Obj.float();
+    runner1Obj.run();
+    runner2Obj.run();
     window.requestAnimationFrame(() => {
         step();
     })
