@@ -1,0 +1,383 @@
+:root {
+  --pixel-size: 2px;
+  --grid-cell: calc(var(--pixel-size) * 16);
+}
+
+@media (min-width: 770px) {
+  :root {
+    --pixel-size: 2px;
+  }
+}
+
+@media (min-width: 950px) {
+  :root {
+    --pixel-size: 3px;
+  }
+}
+
+@media (min-width: 1400px) {
+  :root {
+    --pixel-size: 4px;
+  }
+}
+
+@media (min-width: 1850px) {
+  :root {
+    --pixel-size: 5px;
+  }
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  overflow: hidden;
+  background: cornflowerblue;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0px;
+}
+
+.pixelArt {
+  image-rendering: pixelated;
+}
+
+.camera {
+  width: calc(var(--pixel-size) * 200);
+  height: calc(var(--pixel-size) * 160);
+  background: rgb(121, 191, 248);
+  overflow: visible;
+  position: relative;
+}
+
+/* The map size is 480 x 2700px (So 480/16 = 30 and 2700/16 = 168.75 */
+.map {
+  image-rendering: pixelated;
+  background-image: url(/img/background-map.png);
+  background-size: 100%;
+  background-repeat: no-repeat;
+  width: calc(30 * var(--grid-cell));
+  height: calc(168.75 * var(--grid-cell));
+  position: relative;
+  overflow: visible;
+}
+
+#bridge {
+  width: calc(7.375 * var(--grid-cell));
+  height: calc(13.25 * var(--grid-cell));
+  position: absolute;
+  top: calc(398 * var(--pixel-size));
+  left: calc(144 * var(--pixel-size));
+}
+
+/*
+
+
+
+
+
+
+Character class and IDs */
+
+.character {
+  width: calc(var(--grid-cell) * 1);
+  height: calc(var(--grid-cell) * 1);
+  position: absolute;
+  overflow: hidden;
+}
+
+.characterSpritesheet {
+  background: url(/img/characters/MainCharacter.png) no-repeat no-repeat;
+  position: absolute;
+  background-size: 100%;
+  width: calc(var(--grid-cell) * 4);
+  height: calc(var(--grid-cell) * 4);
+}
+
+.character[facing="right"] .characterSpritesheet {
+  background-position-y: calc(var(--pixel-size) * -16);
+}
+
+.character[facing="up"] .characterSpritesheet {
+  background-position-y: calc(var(--pixel-size) * -32);
+}
+
+.character[facing="left"] .characterSpritesheet {
+  background-position-y: calc(var(--pixel-size) * -48);
+}
+
+.character[walking="true"] .characterSpritesheet {
+  animation: animate 0.6s steps(4) infinite;
+}
+
+/*
+
+
+
+
+
+NPC content */
+
+.soldier1 {
+  width: calc(var(--grid-cell) * 1);
+  height: calc(var(--grid-cell) * 1);
+  position: absolute;
+  overflow: hidden;
+}
+
+.soldier1SpriteSheet {
+  background: url(/img/characters/Soldier1.png) no-repeat no-repeat;
+  position: absolute;
+  background-size: 100%;
+  width: calc(var(--grid-cell) * 4);
+  height: calc(var(--grid-cell) * 4);
+  animation: animate 0.5s steps(4) infinite;
+}
+
+.soldier1[facing="right"] .soldier1SpriteSheet {
+  background-position-y: calc(var(--pixel-size) * -16);
+}
+
+.soldier1[facing="up"] .soldier1SpriteSheet {
+  background-position-y: calc(var(--pixel-size) * -32);
+}
+
+.soldier1[facing="left"] .soldier1SpriteSheet {
+  background-position-y: calc(var(--pixel-size) * -48);
+}
+
+.tuber {
+  overflow: hidden;
+  position: absolute;
+  width: calc(24 * var(--pixel-size));
+  height: calc(24 * var(--pixel-size));
+}
+
+.tuberSheet {
+  background: url(/img/characters/tuber1.png) no-repeat no-repeat;
+  position: absolute;
+  background-size: 100%;
+  width: calc(96 * var(--pixel-size));
+  height: calc(384 * var(--pixel-size));
+}
+
+.tuber1 {
+  top: calc(0 * var(--pixel-size));
+  left: calc(24 * var(--pixel-size));
+}
+
+.tuber1sheet {
+  animation: animate 13s steps(4) infinite;
+}
+
+.tuber2 {
+  top: calc(24 * var(--pixel-size));
+  left: calc(0 * var(--pixel-size));
+}
+
+.tuber2sheet {
+  background-position-y: calc(-24 * var(--pixel-size));
+  animation: animate 18s steps(4) infinite;
+}
+
+/* 
+
+
+
+
+
+Flag class and ID */
+
+.armyFlag {
+  position: absolute;
+  width: calc(45 / 2 * var(--pixel-size));
+  height: calc(70 * var(--pixel-size));
+  overflow: hidden;
+  left: calc(255 * var(--pixel-size));
+  top: calc(170 * var(--pixel-size));
+}
+
+#armyFlag {
+  animation: animate 0.8s steps(7) infinite;
+  width: calc(210 * var(--pixel-size));
+  /* ID width is calculated by class width * steps (ex: 45 * 2 = 192) */
+}
+
+.usFlag {
+  position: absolute;
+  width: calc(90 * var(--pixel-size));
+  height: calc(140 * var(--pixel-size));
+  overflow: hidden;
+  left: calc(267 * var(--pixel-size));
+  top: calc(1293 * var(--pixel-size));
+}
+
+#usFlag {
+  animation: animate 0.8s steps(7) infinite;
+  width: calc(630 * var(--pixel-size));
+  /* ID width is calculated by class width * steps (ex: 45 * 2 = 192) */
+}
+
+/*
+
+
+
+
+
+Sign class and IDs */
+
+.sign {
+  position: absolute;
+  width: calc(96 / 1.5 * var(--pixel-size));
+  height: calc(32 / 1.5 * var(--pixel-size));
+  overflow: hidden;
+}
+
+#sign {
+  animation: animate 3s steps(2) infinite;
+  width: calc(
+    192 / 1.5 * var(--pixel-size)
+  ); /* Sign width is calculated by width * steps (ex: 96 * 2 = 192) */
+}
+
+.armySign {
+  left: calc(270 * var(--pixel-size));
+  top: calc(170 * var(--pixel-size));
+}
+
+.cssSign {
+  left: calc(234 * var(--pixel-size));
+  top: calc(444 * var(--pixel-size));
+}
+
+.htmlSign {
+  left: calc(236 * var(--pixel-size));
+  top: calc(454 * var(--pixel-size));
+}
+
+.javaSign {
+  left: calc(236 * var(--pixel-size));
+  top: calc(464 * var(--pixel-size));
+}
+
+.mySqlSign {
+  left: calc(238 * var(--pixel-size));
+  top: calc(484 * var(--pixel-size));
+}
+
+.pythonSign {
+  left: calc(242 * var(--pixel-size));
+  top: calc(494 * var(--pixel-size));
+}
+
+.javaScriptSign {
+  left: calc(248 * var(--pixel-size));
+  top: calc(504 * var(--pixel-size));
+}
+
+.nurseSign {
+  left: calc(180 * var(--pixel-size));
+  top: calc(1464 * var(--pixel-size));
+}
+
+.degreeSign {
+  left: calc(175 * var(--pixel-size));
+  top: calc(2000 * var(--pixel-size));
+}
+
+/*
+
+
+
+
+
+
+Clock timer class and ID */
+
+.numbers {
+  position: absolute;
+  width: calc(5 * var(--pixel-size));
+  height: calc(8 * var(--pixel-size));
+  overflow: hidden;
+}
+
+#numbers {
+  animation: animate 10s steps(10) infinite;
+  width: calc(50 * var(--pixel-size));
+  /* ID width is calculated by class width * steps */
+}
+
+.numbers0-6 {
+  position: absolute;
+  width: calc(5 * var(--pixel-size));
+  height: calc(8 * var(--pixel-size));
+  overflow: hidden;
+}
+
+#numbers0-6 {
+  animation: animate 10s steps(6) infinite;
+  width: calc(30 * var(--pixel-size));
+  /* ID width is calculated by class width * steps */
+}
+
+.tenMin {
+  left: calc(196 * var(--pixel-size));
+  top: calc(786 * var(--pixel-size));
+}
+
+.oneMin {
+  left: calc(202 * var(--pixel-size));
+  top: calc(786 * var(--pixel-size));
+}
+
+.tenSec {
+  left: calc(210 * var(--pixel-size));
+  top: calc(786 * var(--pixel-size));
+}
+
+.hunSec {
+  left: calc(216 * var(--pixel-size));
+  top: calc(786 * var(--pixel-size));
+}
+
+/*
+
+
+
+
+
+
+River sprite sheet */
+
+#river {
+  animation: animate 3s steps(8) infinite;
+  width: calc(3840 * var(--pixel-size));
+}
+
+.river {
+  position: absolute;
+  width: calc(480 * var(--pixel-size));
+  overflow: hidden;
+  top: calc(375 * var(--pixel-size));
+}
+
+/*
+
+
+
+
+
+
+Animation control */
+
+@keyframes animate {
+  from {
+    transform: translate3d(0%, 0%, 0);
+  }
+  to {
+    transform: translate3d(-100%, 0%, 0);
+  }
+}
