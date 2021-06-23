@@ -39,6 +39,34 @@ body {
   align-items: center;
   justify-content: center;
   margin: 0px;
+  font-family: 'Sora', monospace;
+}
+
+/*
+
+
+
+
+
+
+
+
+Speech Boxes */
+
+.text{
+  background-color: blue;
+  width: calc(100 * var(--pixel-size));
+  height: calc(30 * var(--pixel-size));
+  position: absolute;
+  font-size: calc(6 * var(--pixel-size));
+  word-spacing: 0.2em;
+}
+
+.textBox {
+  background-color: aqua;
+  width: calc(80 * var(--pixel-size));
+  height: calc(20 * var(--pixel-size));
+  position: absolute;
 }
 
 .pixelArt {

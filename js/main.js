@@ -212,6 +212,74 @@ function Runner (runnerClass, runnerSpriteSheet, x, y) {
 let runner1Obj = new Runner(runner1Class, runner1SpriteSheet, 180, 850);
 let runner2Obj = new Runner(runner2Class, runner2SpriteSheet, 180, 810);
 
+
+//
+//
+//
+//
+//
+// Awful Speech Dude
+//
+//
+//
+//
+//
+
+var container = document.querySelector(".text");
+
+var speeds = {
+    pause: 750,
+    slow: 500,
+    normal: 250,
+    fast: 100
+}
+
+var speech = [
+    { string: "Uhm, Hey everyone. ", speed: speeds.normal },
+    { string: "Thanks for letting me practice my speech. ", speed: speeds.normal },
+    { string: "Well, I mean, thanks for listening to me... ", speed: speeds.normal },
+    { string: "practice my speech... in front of you... ", speed: speeds.normal },
+    { string: "while you listen to me... some of you... ", speed: speeds.normal },
+    { string: "Not that that's a problem though! ", speed: speeds.fast },
+    { string: "I don't care if you listen or not! ", speed: speeds.fast },
+    { string: "Wait! Yes I do, I do care! ", speed: speeds.fast },
+    { string: "It's just that I'm not bothered by you not ", speed: speeds.normal },
+    { string: "listening to my speech ", speed: speeds.normal },
+    { string: "since it's just practice. ", speed: speeds.slow },
+    { string: "Right. Well. *cough* I should, uh..  ", speed: speeds.slow },
+    { string: "I should get started with the speech. ", speed: speeds.normal },
+    { string: "Is anyone else hot? ", speed: speeds.normal },
+    { string: "It feels pretty hot to me. ", speed: speeds.normal },
+    { string: "I think I'm sweating a little bit. ", speed: speeds.slow },
+    { string: "I should have brought my water bottle. ", speed: speeds.normal },
+    { string: "I didn't put it in the fridge though, ", speed: speeds.normal },
+    { string: "so it wasn't cold how I like it this morning. ", speed: speeds.normal },
+    { string: "I prefer fridge temp water over ice water. ", speed: speeds.normal },
+    { string: "I think it's my freezer. ", speed: speeds.normal },
+    { string: "Well, it might be the ice maker actually. ", speed: speeds.slow },
+    { string: "I should have the filter replaced soon. ", speed: speeds.normal },
+    { string: "I can't remember the last time I replace the filter. ", speed: speeds.normal },
+    { string: "Sheesh! That's pretty gross, huh!? ", speed: speeds.fast },
+]
+
+var characters = [];
+textLines.forEach(line => {
+
+    line.string.split("").forEach(character => {
+        var span = document.createElement("span");
+        span.textContent = character;
+        container.appendChild(span);
+        characters.push({
+            span: span,
+            isSpace: character === " ",
+            delayAfter: line.speed,
+            classes: line.classes || []
+            // test
+        })
+    })
+
+})
+
 //
 //
 //
