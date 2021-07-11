@@ -27,6 +27,11 @@
   }
 }
 
+@font-face {
+  font-family: "pixelFont";
+  src: url(/font/Pixeled.ttf);
+}
+
 html,
 body {
   height: 100%;
@@ -39,7 +44,7 @@ body {
   align-items: center;
   justify-content: center;
   margin: 0px;
-  font-family: 'Sora', monospace;
+  font-family: "pixelFont", "Sora", monospace;
 }
 
 /*
@@ -53,22 +58,61 @@ body {
 
 Speech Boxes */
 
-.text{
-  background-color: blue;
-  width: calc(100 * var(--pixel-size));
-  height: calc(30 * var(--pixel-size));
+.speechBubble {
+  background-color: whitesmoke;
   position: absolute;
-  font-size: calc(6 * var(--pixel-size));
-  word-spacing: 0.2em;
+  font-size: calc(2 * var(--pixel-size));
+  font-weight: 600;
+  word-spacing: 0.05em;
+  padding: 0.7em;
+  outline: solid;
+  outline-width: calc(0.7 * var(--pixel-size));
+  outline-color: black;
 }
 
-.textBox {
-  background-color: aqua;
-  width: calc(80 * var(--pixel-size));
-  height: calc(20 * var(--pixel-size));
+.text {
+  top: calc(1920 * var(--pixel-size));
+  left: calc(100 * var(--pixel-size));
+  background-color: whitesmoke;
   position: absolute;
+  font-size: calc(2 * var(--pixel-size));
+  font-weight: 600;
+  word-spacing: 0.05em;
+  padding: 0.7em;
+  outline: solid;
+  outline-width: calc(0.7 * var(--pixel-size));
+  outline-color: black;
 }
 
+.text span {
+  opacity: 0;
+}
+
+.text span.revealed {
+  opacity: 1;
+}
+
+.playerText {
+  top: calc(40 * var(--pixel-size));
+  left: calc(80 * var(--pixel-size));
+  opacity: 0;
+}
+
+.ptGraderSpeechBubble {
+  top: calc(800 * var(--pixel-size));
+  left: calc(200 * var(--pixel-size));
+  opacity: 0;
+}
+
+/*
+
+
+
+
+
+
+
+Basic classes */
 .pixelArt {
   image-rendering: pixelated;
 }
@@ -99,6 +143,146 @@ Speech Boxes */
   position: absolute;
   top: calc(398 * var(--pixel-size));
   left: calc(144 * var(--pixel-size));
+}
+
+.mailbox {
+  width: calc(15 * var(--pixel-size));
+  height: calc(18 * var(--pixel-size));
+  position: absolute;
+  overflow: hidden;
+  top: calc(2440 * var(--pixel-size));
+  left: calc(234 * var(--pixel-size));
+}
+
+#mailbox {
+  width: calc(30 * var(--pixel-size));
+}
+
+.mail {
+  width: calc(64 * var(--pixel-size));
+  height: calc(80 * var(--pixel-size));
+  position: absolute;
+  overflow: hidden;
+  top: calc(2406 * var(--pixel-size));
+  left: calc(208 * var(--pixel-size));
+}
+
+.mailClosed {
+  width: calc(32 * var(--pixel-size));
+  height: calc(20 * var(--pixel-size));
+  position: absolute;
+  overflow: hidden;
+  top: calc(2453 * var(--pixel-size));
+  left: calc(224 * var(--pixel-size));
+  visibility: hidden;
+}
+
+.mailClosed:hover {
+  top: calc(2452 * var(--pixel-size));
+  outline-style: solid;
+  outline-width: calc(1 * var(--pixel-size));
+  outline-color: rgb(18, 118, 233);
+}
+
+#mail {
+  width: calc(1024 * var(--pixel-size));
+  visibility: hidden;
+}
+
+.letterForm {
+  background-image: url(/img/LetterForm.png);
+  width: calc(180 * var(--pixel-size));
+  height: calc(180 * var(--pixel-size));
+  background-size: 100%;
+  position: absolute;
+  top: calc(-10 * var(--pixel-size));
+  left: calc(16 * var(--pixel-size));
+}
+
+.formLetterController {
+  visibility: hidden;
+}
+
+.submitFormLetter {
+  background-color: whitesmoke;
+  top: calc(144 * var(--pixel-size));
+  left: calc(126 * var(--pixel-size));
+  font-family: "pixelFont", "Sora", monospace;
+  padding: 0.7em;
+  padding-top: 0em;
+  padding-bottom: 0.2em;
+  outline: solid;
+  outline-width: calc(0.7 * var(--pixel-size));
+  outline-color: black;
+}
+
+.formText {
+  position: absolute;
+  font-size: calc(5 * var(--pixel-size));
+  word-spacing: 0.05em;
+}
+
+.formTextLabel {
+  position: absolute;
+  top: calc(3 * var(--pixel-size));
+  left: calc(49 * var(--pixel-size));
+  font-family: "pixelFont", "Sora", monospace;
+}
+
+.formTextField {
+  position: absolute;
+  top: calc(17 * var(--pixel-size));
+  left: calc(50 * var(--pixel-size));
+  font-family: "pixelFont", "Sora", monospace;
+  resize: none;
+}
+
+.formEmailLabel {
+  position: absolute;
+  top: calc(81 * var(--pixel-size));
+  left: calc(49 * var(--pixel-size));
+  font-family: "pixelFont", "Sora", monospace;
+}
+
+.formEmailField {
+  position: absolute;
+  top: calc(95 * var(--pixel-size));
+  left: calc(50 * var(--pixel-size));
+  width: calc(109 * var(--pixel-size));
+  font-family: "pixelFont", "Sora", monospace;
+}
+
+.formNameLabel {
+  position: absolute;
+  top: calc(112 * var(--pixel-size));
+  left: calc(49 * var(--pixel-size));
+  font-family: "pixelFont", "Sora", monospace;
+}
+
+.formNameField {
+  position: absolute;
+  top: calc(128 * var(--pixel-size));
+  left: calc(50 * var(--pixel-size));
+  width: calc(82 * var(--pixel-size));
+  font-family: "pixelFont", "Sora", monospace;
+}
+
+.formCloseBtn {
+  width: calc(10 * var(--pixel-size));
+  height: calc(10 * var(--pixel-size));
+  position: absolute;
+  top: calc(0 * var(--pixel-size));
+  left: calc(160 * var(--pixel-size));
+  background-color: whitesmoke;
+  font-family: "pixelFont", "Sora", monospace;
+  font-size: small;
+  padding: 0.7em;
+  padding-top: 0em;
+  padding-bottom: 0.2em;
+  outline: solid;
+  outline-width: calc(0.3 * var(--pixel-size));
+  outline-color: black;
+  margin: 0;
 }
 
 /*
@@ -188,6 +372,17 @@ NPC content */
   animation: animate 0.6s steps(4) infinite;
 }
 
+.soldier3 {
+  visibility: visible;
+  top: calc(810 * var(--pixel-size));
+  left: calc(210 * var(--pixel-size));
+}
+
+.soldier3SpriteSheet {
+  background: url(/img/characters/soldier3.png) no-repeat no-repeat;
+  background-size: 100%;
+  background-position-y: calc(-3 * var(--grid-cell));
+}
 
 .tuber {
   overflow: hidden;
@@ -320,6 +515,16 @@ Sign class and IDs */
 .javaScriptSign {
   left: calc(248 * var(--pixel-size));
   top: calc(504 * var(--pixel-size));
+}
+
+.leaderSign {
+  left: calc(248 * var(--pixel-size));
+  top: calc(826 * var(--pixel-size));
+}
+
+.netSysSign {
+  left: calc(248 * var(--pixel-size));
+  top: calc(950 * var(--pixel-size));
 }
 
 .nurseSign {
