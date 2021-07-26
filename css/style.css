@@ -72,7 +72,7 @@ Speech Boxes */
 
 .text {
   top: calc(1920 * var(--pixel-size));
-  left: calc(100 * var(--pixel-size));
+  left: calc(140 * var(--pixel-size));
   background-color: whitesmoke;
   position: absolute;
   font-size: calc(2 * var(--pixel-size));
@@ -98,6 +98,14 @@ Speech Boxes */
   opacity: 0;
 }
 
+.playerText span {
+  opacity: 0;
+}
+
+.playerText span.revealed {
+  opacity: 1;
+}
+
 .ptGraderSpeechBubble {
   top: calc(800 * var(--pixel-size));
   left: calc(200 * var(--pixel-size));
@@ -114,7 +122,15 @@ Speech Boxes */
 
 Basic classes */
 .pixelArt {
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -webkit-crisp-edges;
   image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+.glow {
+  -webkit-filter: drop-shadow(0px 0px 10px rgba(208, 255, 0, 1));
+  filter: drop-shadow(0px 0px 10px rgba(208, 255, 0, 1));
 }
 
 .camera {
@@ -122,7 +138,7 @@ Basic classes */
   height: calc(var(--pixel-size) * 160);
   background: rgb(121, 191, 248);
   overflow: visible;
-  position: relative;
+  position: absolute;
 }
 
 /* The map size is 480 x 2700px (So 480/16 = 30 and 2700/16 = 168.75 */
@@ -143,7 +159,20 @@ Basic classes */
   position: absolute;
   top: calc(398 * var(--pixel-size));
   left: calc(144 * var(--pixel-size));
+  background-image: url(/img/Bridge.png);
+  background-repeat: no-repeat;
+  background-size: 100%;
 }
+
+/* 
+
+
+
+
+
+
+
+Mailbox and Letter/Form */
 
 .mailbox {
   width: calc(15 * var(--pixel-size));
@@ -156,6 +185,10 @@ Basic classes */
 
 #mailbox {
   width: calc(30 * var(--pixel-size));
+  height: calc(18 * var(--pixel-size));
+  background-image: url(/img/Mailbox.png);
+  background-size: 100%;
+  background-repeat: no-repeat;
 }
 
 .mail {
@@ -163,29 +196,42 @@ Basic classes */
   height: calc(80 * var(--pixel-size));
   position: absolute;
   overflow: hidden;
-  top: calc(2406 * var(--pixel-size));
+  top: calc(2416 * var(--pixel-size));
   left: calc(208 * var(--pixel-size));
 }
 
 .mailClosed {
-  width: calc(32 * var(--pixel-size));
-  height: calc(20 * var(--pixel-size));
+  width: calc(34 * var(--pixel-size));
+  height: calc(23 * var(--pixel-size));
   position: absolute;
   overflow: hidden;
-  top: calc(2453 * var(--pixel-size));
-  left: calc(224 * var(--pixel-size));
-  visibility: hidden;
+  top: calc(2460 * var(--pixel-size));
+  left: calc(223 * var(--pixel-size));
 }
 
 .mailClosed:hover {
-  top: calc(2452 * var(--pixel-size));
+  top: calc(2458 * var(--pixel-size));
   outline-style: solid;
   outline-width: calc(1 * var(--pixel-size));
   outline-color: rgb(18, 118, 233);
+  cursor: pointer;
+}
+
+.mailClosedSpriteSheet {
+  width: calc(68 * var(--pixel-size));
+  height: calc(23 * var(--pixel-size));
+  background-image: url(/img/MailLetterClosed.png);
+  background-repeat: no-repeat;
+  background-size: 100%;
+  animation: animate 2s steps(2) infinite;
 }
 
 #mail {
   width: calc(1024 * var(--pixel-size));
+  height: calc(80 * var(--pixel-size));
+  background-image: url(/img/MailSpriteSheet.png);
+  background-size: 100%;
+  background-repeat: no-repeat;
   visibility: hidden;
 }
 
@@ -216,9 +262,13 @@ Basic classes */
   outline-color: black;
 }
 
+.submitFormLetter:hover {
+  cursor: pointer;
+}
+
 .formText {
   position: absolute;
-  font-size: calc(5 * var(--pixel-size));
+  font-size: calc(4 * var(--pixel-size));
   word-spacing: 0.05em;
 }
 
@@ -235,6 +285,8 @@ Basic classes */
   left: calc(50 * var(--pixel-size));
   font-family: "pixelFont", "Sora", monospace;
   resize: none;
+  width: calc(110 * var(--pixel-size));
+  height: calc(60 * var(--pixel-size));
 }
 
 .formEmailLabel {
@@ -250,6 +302,8 @@ Basic classes */
   left: calc(50 * var(--pixel-size));
   width: calc(109 * var(--pixel-size));
   font-family: "pixelFont", "Sora", monospace;
+  width: calc(110 * var(--pixel-size));
+  height: calc(5 * var(--pixel-size));
 }
 
 .formNameLabel {
@@ -265,24 +319,87 @@ Basic classes */
   left: calc(50 * var(--pixel-size));
   width: calc(82 * var(--pixel-size));
   font-family: "pixelFont", "Sora", monospace;
+  width: calc(60 * var(--pixel-size));
+  height: calc(5 * var(--pixel-size));
 }
 
 .formCloseBtn {
-  width: calc(10 * var(--pixel-size));
-  height: calc(10 * var(--pixel-size));
+  width: calc(9 * var(--pixel-size));
+  height: calc(9 * var(--pixel-size));
   position: absolute;
-  top: calc(0 * var(--pixel-size));
-  left: calc(160 * var(--pixel-size));
-  background-color: whitesmoke;
-  font-family: "pixelFont", "Sora", monospace;
-  font-size: small;
-  padding: 0.7em;
-  padding-top: 0em;
-  padding-bottom: 0.2em;
-  outline: solid;
-  outline-width: calc(0.3 * var(--pixel-size));
-  outline-color: black;
+  top: calc(3 * var(--pixel-size));
+  left: calc(156 * var(--pixel-size));
   margin: 0;
+  outline: solid;
+  outline-width: calc(0.7 * var(--pixel-size));
+  outline-color: black;
+  background-image: url("/img/btns/closeBtn.png");
+  background-size: 100%;
+  background-repeat: no-repeat;
+}
+
+.formCloseBtn:hover {
+  cursor: pointer;
+}
+
+/* 
+
+
+
+
+
+
+
+UI and Buttons */
+
+.allBtns {
+  visibility: visible;
+}
+
+.single-btn {
+  opacity: 0.6;
+  width: calc(32 * var(--pixel-size));
+  height: calc(32 * var(--pixel-size));
+  position: absolute;
+  overflow: hidden;
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+
+.singleBtnSpriteSheet {
+  width: calc(32 * var(--pixel-size));
+  height: calc(64 * var(--pixel-size));
+}
+
+.sprint-btn {
+  background-image: url("/img/btns/control-button-sprint-ss.png");
+  top: calc(80 * var(--pixel-size));
+  left: calc(42 * var(--pixel-size));
+}
+
+.upBtn {
+  background-image: url("/img/btns/controlButtonUp.png");
+  top: calc(80 * var(--pixel-size));
+  left: calc(140 * var(--pixel-size));
+}
+
+.downBtn {
+  background-image: url("/img/btns/controlButtonDown.png");
+  top: calc(110 * var(--pixel-size));
+  left: calc(140 * var(--pixel-size));
+  background-position-y: calc(0 * var(--pixel-size));
+}
+
+.sprint-btn:hover {
+  cursor: pointer;
+}
+
+.upBtn:hover {
+  cursor: pointer;
+}
+
+.downBtn:hover {
+  cursor: pointer;
 }
 
 /*
@@ -297,34 +414,39 @@ Basic classes */
 Character class and IDs */
 
 .character {
-  width: calc(var(--grid-cell) * 1);
-  height: calc(var(--grid-cell) * 1);
+  width: calc(var(--pixel-size) * 20);
+  height: calc(var(--pixel-size) * 20);
   position: absolute;
   overflow: hidden;
 }
 
 .characterSpritesheet {
-  background: url(/img/characters/MainCharacter.png) no-repeat no-repeat;
-  position: absolute;
+  background-image: url(/img/characters/main-character-ss.png);
+  background-repeat: no-repeat;
   background-size: 100%;
-  width: calc(var(--grid-cell) * 4);
-  height: calc(var(--grid-cell) * 4);
+  position: absolute;
+  width: calc(var(--pixel-size) * 80);
+  height: calc(var(--pixel-size) * 160);
 }
 
 .character[facing="right"] .characterSpritesheet {
-  background-position-y: calc(var(--pixel-size) * -16);
+  background-position-y: calc(var(--pixel-size) * -20);
 }
 
 .character[facing="up"] .characterSpritesheet {
-  background-position-y: calc(var(--pixel-size) * -32);
+  background-position-y: calc(var(--pixel-size) * -40);
 }
 
 .character[facing="left"] .characterSpritesheet {
-  background-position-y: calc(var(--pixel-size) * -48);
+  background-position-y: calc(var(--pixel-size) * -60);
 }
 
 .character[walking="true"] .characterSpritesheet {
   animation: animate 0.6s steps(4) infinite;
+}
+
+.character[sprinting="true"] .characterSpritesheet {
+  animation: animate 0.3s steps(4) infinite;
 }
 
 /*
@@ -338,6 +460,30 @@ Character class and IDs */
 
 
 NPC content */
+
+.doggo {
+  visibility: hidden;
+  width: calc(30 * var(--pixel-size));
+  height: calc(30 * var(--pixel-size));
+  position: absolute;
+  overflow: hidden;
+}
+
+.doggoSpriteSheet {
+  width: calc(120 * var(--pixel-size));
+  height: calc(30 * var(--pixel-size));
+  background: url("/img/characters/doggo1.png") no-repeat no-repeat;
+  background-size: 100%;
+}
+
+.doggo1 {
+  top: calc(800 * var(--pixel-size));
+  left: calc(300 * var(--pixel-size));
+}
+
+.doggo1SpriteSheet {
+  animation: animate 0.5s steps(4) infinite;
+}
 
 .soldier {
   width: calc(var(--grid-cell) * 1);
@@ -357,7 +503,8 @@ NPC content */
 }
 
 .soldier1SpriteSheet {
-  background: url(/img/characters/soldier1.png) no-repeat no-repeat;
+  background: url(/img/characters/main-character-running.png) no-repeat
+    no-repeat;
   background-size: 100%;
   animation: animate 0.5s steps(4) infinite;
 }
@@ -380,6 +527,18 @@ NPC content */
 
 .soldier3SpriteSheet {
   background: url(/img/characters/soldier3.png) no-repeat no-repeat;
+  background-size: 100%;
+  background-position-y: calc(-3 * var(--grid-cell));
+}
+
+.soldier4 {
+  visibility: visible;
+  top: calc(1136 * var(--pixel-size));
+  left: calc(196 * var(--pixel-size));
+}
+
+.soldier4SpriteSheet {
+  background: url(/img/characters/soldier4.png) no-repeat no-repeat;
   background-size: 100%;
   background-position-y: calc(-3 * var(--grid-cell));
 }
@@ -418,6 +577,70 @@ NPC content */
   animation: animate 18s steps(4) infinite;
 }
 
+.grad {
+  overflow: hidden;
+  position: absolute;
+  width: calc(32 * var(--pixel-size));
+  height: calc(46 * var(--pixel-size));
+}
+
+.gradSpriteSheet {
+  background: url("/img/characters/grad1.png") no-repeat no-repeat;
+  position: absolute;
+  background-size: 100%;
+  width: calc(64 * var(--pixel-size));
+  height: calc(46 * var(--pixel-size));
+}
+
+.grad1 {
+  top: calc(2170 * var(--pixel-size));
+  left: calc(164 * var(--pixel-size));
+}
+
+.grad1SpriteSheet {
+  animation: animate 20s steps(2) infinite;
+}
+
+.grad2 {
+  top: calc(2089 * var(--pixel-size));
+  left: calc(132 * var(--pixel-size));
+}
+
+.grad2SpriteSheet {
+  background-image: url("/img/characters/grad2.png");
+  animation: animate 16s steps(2) infinite;
+}
+
+.grad3 {
+  top: calc(2089 * var(--pixel-size));
+  left: calc(164 * var(--pixel-size));
+}
+
+.grad3SpriteSheet {
+  background-image: url("/img/characters/grad3.png");
+  animation: animate 13s steps(2) infinite;
+}
+
+.grad4 {
+  top: calc(2137 * var(--pixel-size));
+  left: calc(116 * var(--pixel-size));
+}
+
+.grad4SpriteSheet {
+  background-image: url("/img/characters/grad4.png");
+  animation: animate 8s steps(2) infinite;
+}
+
+.grad5 {
+  top: calc(2137 * var(--pixel-size));
+  left: calc(164 * var(--pixel-size));
+}
+
+.grad5SpriteSheet {
+  background-image: url("/img/characters/grad5.png");
+  animation: animate 11s steps(2) infinite;
+}
+
 /* 
 
 
@@ -437,10 +660,14 @@ Flag class and ID */
   top: calc(170 * var(--pixel-size));
 }
 
-#armyFlag {
+#armyFlagSS {
   animation: animate 0.8s steps(7) infinite;
   width: calc(210 * var(--pixel-size));
   /* ID width is calculated by class width * steps (ex: 45 * 2 = 192) */
+  height: calc(70 * var(--pixel-size));
+  background-size: 100%;
+  background-image: url(/img/flag/FlagSheet.png);
+  background-repeat: no-repeat;
 }
 
 .usFlag {
@@ -452,10 +679,14 @@ Flag class and ID */
   top: calc(1293 * var(--pixel-size));
 }
 
-#usFlag {
+#usFlagSS {
   animation: animate 0.8s steps(7) infinite;
   width: calc(630 * var(--pixel-size));
   /* ID width is calculated by class width * steps (ex: 45 * 2 = 192) */
+  height: calc(140 * var(--pixel-size));
+  background-size: 100%;
+  background-image: url(/img/flag/usFlagSheet.png);
+  background-repeat: no-repeat;
 }
 
 /*
@@ -475,11 +706,25 @@ Sign class and IDs */
   overflow: hidden;
 }
 
-#sign {
+.signSS {
   animation: animate 3s steps(2) infinite;
   width: calc(
     192 / 1.5 * var(--pixel-size)
   ); /* Sign width is calculated by width * steps (ex: 96 * 2 = 192) */
+  height: calc(96 / 1.5 * var(--pixel-size));
+  background-size: 100%;
+  background-repeat: no-repeat;
+  background-image: url(/img/Signs/ArmySigns.png);
+}
+
+.goDownSign {
+  opacity: 0.8;
+  left: calc(208 * var(--pixel-size));
+  top: calc(200 * var(--pixel-size));
+}
+
+.goDownSignSS {
+  background-image: url(/img/Signs/goDownSign.png);
 }
 
 .armySign {
@@ -487,9 +732,19 @@ Sign class and IDs */
   top: calc(170 * var(--pixel-size));
 }
 
+.armySignSS {
+  animation: animate 3.1s steps(2) infinite;
+  background-image: url(/img/Signs/ArmySigns.png);
+}
+
 .cssSign {
   left: calc(234 * var(--pixel-size));
   top: calc(444 * var(--pixel-size));
+}
+
+.cssSignSS {
+  animation: animate 3.4s steps(2) infinite;
+  background-image: url(/img/Signs/CSSSign.png);
 }
 
 .htmlSign {
@@ -497,9 +752,19 @@ Sign class and IDs */
   top: calc(454 * var(--pixel-size));
 }
 
+.htmlSignSS {
+  animation: animate 3.6s steps(2) infinite;
+  background-image: url(/img/Signs/HTMLSign.png);
+}
+
 .javaSign {
   left: calc(236 * var(--pixel-size));
   top: calc(464 * var(--pixel-size));
+}
+
+.javaSignSS {
+  animation: animate 3.1s steps(2) infinite;
+  background-image: url(/img/Signs/JavaSign.png);
 }
 
 .mySqlSign {
@@ -507,9 +772,19 @@ Sign class and IDs */
   top: calc(484 * var(--pixel-size));
 }
 
+.mySqlSignSS {
+  animation: animate 3.5s steps(2) infinite;
+  background-image: url(/img/Signs/MySQLSign.png);
+}
+
 .pythonSign {
   left: calc(242 * var(--pixel-size));
   top: calc(494 * var(--pixel-size));
+}
+
+.pythonSignSS {
+  animation: animate 3.2s steps(2) infinite;
+  background-image: url(/img/Signs/PythonSign.png);
 }
 
 .javaScriptSign {
@@ -517,14 +792,27 @@ Sign class and IDs */
   top: calc(504 * var(--pixel-size));
 }
 
+.javaScriptSignSS {
+  animation: animate 3.3s steps(2) infinite;
+  background-image: url(/img/Signs/JavaScriptSign.png);
+}
+
 .leaderSign {
   left: calc(248 * var(--pixel-size));
   top: calc(826 * var(--pixel-size));
 }
 
+.leaderSignSS {
+  background-image: url(/img/Signs/LeaderSign.png);
+}
+
 .netSysSign {
   left: calc(248 * var(--pixel-size));
-  top: calc(950 * var(--pixel-size));
+  top: calc(1140 * var(--pixel-size));
+}
+
+.netSysSignSS {
+  background-image: url(/img/Signs/NetSysSign.png);
 }
 
 .nurseSign {
@@ -532,9 +820,17 @@ Sign class and IDs */
   top: calc(1464 * var(--pixel-size));
 }
 
+.nurseSignSS {
+  background-image: url(/img/Signs/NurseSign.png);
+}
+
 .degreeSign {
-  left: calc(175 * var(--pixel-size));
+  left: calc(245 * var(--pixel-size));
   top: calc(2000 * var(--pixel-size));
+}
+
+.degreeSignSS {
+  background-image: url(/img/Signs/DegreeSign.png);
 }
 
 /*
@@ -550,27 +846,57 @@ Clock timer class and ID */
 .numbers {
   position: absolute;
   width: calc(5 * var(--pixel-size));
-  height: calc(8 * var(--pixel-size));
+  height: calc(7 * var(--pixel-size));
   overflow: hidden;
 }
 
 #numbers {
-  animation: animate 10s steps(10) infinite;
+  position: absolute;
   width: calc(50 * var(--pixel-size));
+  height: calc(7 * var(--pixel-size));
   /* ID width is calculated by class width * steps */
 }
 
 .numbers0-6 {
   position: absolute;
   width: calc(5 * var(--pixel-size));
-  height: calc(8 * var(--pixel-size));
+  height: calc(7 * var(--pixel-size));
   overflow: hidden;
 }
 
 #numbers0-6 {
-  animation: animate 10s steps(6) infinite;
+  position: absolute;
   width: calc(30 * var(--pixel-size));
+  height: calc(7 * var(--pixel-size));
   /* ID width is calculated by class width * steps */
+}
+
+.numbers-hours {
+  animation: animate 3600s steps(6) infinite;
+  background-image: url(/img/ClockNumbers0-6.png);
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+
+.numbers-minutes {
+  animation: animate 600s steps(10) infinite;
+  background-image: url(/img/ClockNumbers.png);
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+
+.numbers-tens-seconds {
+  animation: animate 60s steps(6) infinite;
+  background-image: url(/img/ClockNumbers0-6.png);
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+
+.numbers-seconds {
+  animation: animate 10s steps(10) infinite;
+  background-image: url(/img/ClockNumbers.png);
+  background-repeat: no-repeat;
+  background-size: 100%;
 }
 
 .tenMin {
@@ -602,11 +928,15 @@ Clock timer class and ID */
 
 
 
-River sprite sheet */
+Map Objects */
 
-#river {
+.riverSpriteSheet {
+  background-image: url("/img/RiverSpriteSheet.png");
+  background-size: 100%;
+  background-repeat: no-repeat;
   animation: animate 3s steps(8) infinite;
   width: calc(3840 * var(--pixel-size));
+  height: calc(210 * var(--pixel-size));
 }
 
 .river {
@@ -614,6 +944,49 @@ River sprite sheet */
   width: calc(480 * var(--pixel-size));
   overflow: hidden;
   top: calc(375 * var(--pixel-size));
+}
+
+.generator {
+  position: absolute;
+  width: calc(53 * var(--pixel-size));
+  overflow: hidden;
+  top: calc(1206 * var(--pixel-size));
+  left: calc(175 * var(--pixel-size));
+}
+
+.generatorSpriteSheet {
+  animation: animate 0.15s steps(2) infinite;
+  width: calc(106 * var(--pixel-size));
+  height: calc(57 * var(--pixel-size));
+  background-size: 100%;
+  background-image: url(/img/generatorSpriteSheet.png);
+  background-repeat: no-repeat;
+}
+
+.palmTree {
+  position: absolute;
+  width: calc(90 * var(--pixel-size));
+  overflow: hidden;
+  top: calc(1300 * var(--pixel-size));
+  left: calc(183 * var(--pixel-size));
+}
+
+.palmTreeSpriteSheet {
+  animation: animate 6s steps(2) infinite;
+  background-image: url(/img/plants/palmTree1.png);
+  background-repeat: no-repeat;
+  background-size: 100%;
+  width: calc(180 * var(--pixel-size));
+  height: calc(120 * var(--pixel-size));
+}
+
+.palmTreeSpriteSheet1 {
+  background-image: url(/img/plants/palmTree2.png);
+}
+
+.palmTree2 {
+  top: calc(1509 * var(--pixel-size));
+  left: calc(183 * var(--pixel-size));
 }
 
 /*

@@ -1,10 +1,20 @@
 // Reference to the HTML elements
 const map = document.querySelector(".map");
-const character = document.querySelector(".character");
 
-const speed = 2.5; // Speed of player character movement in px/frame
-const runnerSpeed = 0.1;
-const floatSpeed = 1.2;
+
+// Speed multipliers
+const globalSpeedModifier = 1;
+const globalSpeed = 60;
+var playerCharacterWalkSpeedModifier = 1;
+const runnerSpeedModifier = 0.5;
+const floatSpeedModifier = 4.4;
+const generatorNPCSpeedModifier = 0.5;
+
+// Player speeds
+var playerCharacterWalkSpeed; // Speed of player character movement
+var runnerSpeed;
+var floatSpeed;
+var generatorSpeed;
 
 
 //
@@ -26,7 +36,6 @@ const tuber1Sheet = document.querySelector(".tuber1sheet");
 
 const tuber2Class = document.querySelector(".tuber2");
 const tuber2Sheet = document.querySelector(".tuber2sheet");
-
 
 
 // Create a new toooober object
@@ -51,7 +60,7 @@ function Tuber (tuberClass, tuberSheet) {
     var count = 0;
 
     // Func to float the toooober down left
-    this.float = function () {
+    this.float = function (floatSpeedDelta) {
         
         px = getPixelSize();
         
@@ -66,21 +75,21 @@ function Tuber (tuberClass, tuberSheet) {
         }
         
         if (count == 100) {
-            this.y -= (0.2 * floatSpeed);
+            this.y -= (0.2 * floatSpeedDelta);
         }
 
         if (count == 200) {
-            this.y += (0.2 * floatSpeed);
+            this.y += (0.2 * floatSpeedDelta);
             count = 0;
         }
 
         count++;
         
         if (this.x > 130) {
-            this.y += (0.004 * floatSpeed);
+            this.y += (0.004 * floatSpeedDelta);
         }
 
-        this.x -= (0.02 * floatSpeed);
+        this.x -= (0.02 * floatSpeedDelta);
         this.tuberSheet.style.setProperty("background-position-y", `${bgNum * px}px`);
         this.tuberClass.style.transform = `translate3d( ${this.x * px}px, ${this.y * px}px, 0)`;
 
@@ -103,6 +112,7 @@ let tuber2Obj = new Tuber(tuber2Class, tuber2Sheet);
 //
 //
 //
+
 
 // Soldier/Runner on track
 const runner1Class = document.querySelector(".soldier1");
@@ -148,7 +158,7 @@ function Runner (runnerClass, runnerSpriteSheet, x, y) {
     
     
     // Make them run
-    this.run = function () {
+    this.run = function (speedDelta) {
         
         // Get the pixel size each iteration to ensure the most accurate value is available
         px = getPixelSize();
@@ -157,39 +167,39 @@ function Runner (runnerClass, runnerSpriteSheet, x, y) {
         // Check their x and y pos
         // 1 to 2 to 3 (Top Left and Top Middle)
         if (this.y >= runnerCurveTop && this.x < runnerMidRight && this.x >= runnerLeftLimit && this.y <= runnerTopLimit) {
-            this.x += runnerSpeed;
-            this.y -= runnerSpeed; // Going north east
+            this.x += speedDelta;
+            this.y -= speedDelta; // Going north east
             this.spriteSheet.style.setProperty("background-position-y", `${right * px}px`);
         }
         
         // 3 to 4 (Top Middle and Top Right)
         if (this.y >= runnerCurveTop && this.x >= runnerMidRight && this.x < runnerRightLimit && this.y < runnerTopLimit) {
-            this.x += runnerSpeed;
-            this.y += runnerSpeed; // Going south east
+            this.x += speedDelta;
+            this.y += speedDelta; // Going south east
         }
         
         // 4 to 5 (Right)
         if (this.x == runnerRightLimit && this.y < runnerBottomLimit) {
-            this.y += runnerSpeed; // Going south
+            this.y += speedDelta; // Going south
             this.spriteSheet.style.setProperty("background-position-y", `${runnerDown * px}px`);
         }
         
         // 5 to 6 to 7 (Bottom Right and Bottom Middle)
         if (this.y <= runnerCurveBottom && this.y >= runnerBottomLimit && this.x <= runnerRightLimit && this.x > runnerMidLeft) {
-            this.x -= runnerSpeed;
-            this.y += runnerSpeed; // Going south west
+            this.x -= speedDelta;
+            this.y += speedDelta; // Going south west
             this.spriteSheet.style.setProperty("background-position-y", `${left * px}px`);
         }
         
         // 6 to 7 (Bottom Middle and Bottom Left)
         if (this.y <= runnerCurveBottom && this.y >= runnerBottomLimit && this.x >= runnerLeftLimit && this.x <= runnerMidLeft) {
-            this.x -= runnerSpeed;
-            this.y -= runnerSpeed; // Going north west
+            this.x -= speedDelta;
+            this.y -= speedDelta; // Going north west
         }
         
         // 7 to 8 (Left)
         if (this.x == runnerLeftLimit && this.y >= runnerTopLimit) {
-            this.y -= runnerSpeed; // Going north
+            this.y -= speedDelta; // Going north
             this.spriteSheet.style.setProperty("background-position-y", `${up * px}px`);
         }
         
@@ -200,18 +210,100 @@ function Runner (runnerClass, runnerSpriteSheet, x, y) {
         if (this.y > runnerCurveBottom) { this.y = runnerCurveBottom; }
         
         // Set their positions
-        this.class.style.transform = `translate3d( ${this.x * pixelSize}px, ${this.y * pixelSize}px, 0)`;
+        this.class.style.transform = `translate3d( ${this.x * px}px, ${this.y * px}px, 0)`;
     }
-    
-    
-    
-    
 }
-
 
 // Create the runner objects
 let runner1Obj = new Runner(runner1Class, runner1SpriteSheet, 180, 850);
 let runner2Obj = new Runner(runner2Class, runner2SpriteSheet, 180, 810);
+
+
+//
+//
+//
+//
+//
+// JNN and STT Soldiers
+//
+//
+//
+//
+//
+
+function generatorNPC () {
+
+    var topLimit = 0;
+    var bottomLimit = 80;
+    this.spriteSheet = document.querySelector(".soldier4SpriteSheet");
+    this.divHolder = document.querySelector(".soldier4");
+    this.y = 1;
+    var self = this;
+    var isNPCPaused = false;
+    var pauseStart = new Date().getTime();
+    var pauseLimit = 4000;
+    var direction = "south";
+    var dirNum = 0; // North: -2 | South: 0 | East: -1 | West: -3
+
+    this.animate = function (speed, timeStamp, px) {
+
+        //console.log("Speed: ", speed);
+
+        if (isNPCPaused) {
+
+            if (timeStamp - pauseStart >= pauseLimit) {
+
+                if (direction === "north") {
+                    dirNum = -2; // Set the SpriteSheet quadrant to North
+                }
+                
+                if (direction === "south") {
+                    dirNum = 0; // Set the SpriteSheet quadrant to South
+                }
+
+                this.spriteSheet.style.setProperty("animation", "animate 0.5s steps(4) infinite");
+                isNPCPaused = false;
+            }
+
+        }
+
+        // If NPC is waiting at a point before walking back
+        if (!(isNPCPaused)) {
+
+            // If he's set to walk north
+            if (direction === "north") {
+                this.y -= speed;
+
+                // If NPC is at top point
+                if (this.y <= topLimit) {
+                    pauseStart = timeStamp; // Set the time stamp for the pause to now
+                    direction = "south"; // Tell the NPC to walk South next (He won't until after the delay though)
+                    this.spriteSheet.style.setProperty("animation", "none"); // Stop the walking animation
+                    isNPCPaused = true;
+                }
+            }
+            
+            // If he's set to walk south
+            if (direction === "south") {
+                this.y += speed;
+
+                // If NPC is at bottom point
+                if (this.y >= bottomLimit) {
+                    pauseStart = timeStamp; // Set the time stamp for the pause to now
+                    direction = "north"; // Tell the NPC to walk North next (He won't until after the delay though)
+                    dirNum = -3; // Set the SpriteSheet quadrant to West
+                    this.spriteSheet.style.setProperty("animation", "none"); // Stop the walking animation
+                    isNPCPaused = true;
+                }
+            }
+        }
+
+        this.spriteSheet.style.setProperty("background-position-y", `${dirNum * px * 16}px`);
+        this.divHolder.style.transform = `translate3d( ${0 * px}px, ${this.y * px}px, 0)`;
+    }
+}
+
+let generatorNPCObj = new generatorNPC();
 
 
 //
@@ -226,9 +318,6 @@ let runner2Obj = new Runner(runner2Class, runner2SpriteSheet, 180, 810);
 //
 //
 
-
-// Get the .text class
-var container = document.querySelector(".text");
 
 // Set the varying speeds for text to display
 var speeds = {
@@ -431,123 +520,91 @@ var speech = [
     { string: "… ", speed: speeds.normal },
 ]
 
+// Get the .text class
+var container = document.querySelector(".text");
 
-var letters = [];
-var isPlayerCharacterReadyForSpeech = false;
-var isAMUNPCSpeaking = false;
+function AwfulSpeechDude () {    
+    this.timeSinceLastMessage = 0; // Difference between lastMessageTime and now
+    var letters = [];
+    this.isPlayerCharacterReadyForSpeech = false;
+    this.isAMUNPCSpeaking = false;
+    var self = this;
+    
+    var speechLine = 0; // Current sentence number for the speech
+    var previousDelay = (speech[speechLine].speed * speech[speechLine].string.length) * 1.5; // Post speech sentence delay
+    
+    this.playAwfulSpeech = function () {
+        this.timeSinceLastMessage = nowTime - lastMessageTime; // Time since the last speech message compared to nowTime
 
-function playSpeech (line) {
-
-    this.line = line;
-
-    speech[this.line].string.split("").forEach(letter => {
-        var span = document.createElement("span");
-        span.textContent = letter;
-        container.appendChild(span);
+        // If timeSinceLastMessage doesn't have a value yet
+        // Meaning it's the first time it's being ran
+        if (!(this.timeSinceLastMessage > -1)) {
+            // Set the value to 11000 (A number large enough for "most" sentences)
+            this.timeSinceLastMessage = 11000;
+        }
         
-        letters.push({
-            span: span,
-            delayAfter: speech[this.line].speed,
-            isSpace: letter === " ",
+        // If player is ready (meaning he's past Y 1800 | See placeCharacter()) and
+        // If the current sentence is less than the total number of sentences and
+        // If the person isn't already speaking: continue
+        if (this.isPlayerCharacterReadyForSpeech && speechLine < speech.length && !(this.isAMUNPCSpeaking)) {
+            // If the line that the speaker is on, is past the first line
+            if (speechLine > 0) {
+                // Get the speech speed - 1 index to match the delay with the sentence speed
+                // Otherwise it'd be for the next line speed which may be different
+                previousDelay = (speech[speechLine-1].speed * speech[speechLine-1].string.length) * 1.5;
+            }
+            
+            // If the previousDelay timer has been met or exceeded by timeSinceLastMessage
+            if (this.timeSinceLastMessage >= previousDelay) {
+                container.innerHTML = ""; // Clear the current HTML spans
+                this.playSpeech(speechLine); // Play the next speech sentence
+                this.timeSinceLastMessage = 0; // Reset the last speech sentence elapsed time to 0
+                lastMessageTime = new Date().getTime(); // Reset the time stamp of the last message
+                speechLine++; // Go to the next speech sentence
+            }
+        }
+    }
+
+    this.playSpeech = function (line) {
+        this.line = line;
+
+        speech[this.line].string.split("").forEach(letter => {
+            var span = document.createElement("span");
+            span.textContent = letter;
+            container.appendChild(span);
+        
+            letters.push({
+                span: span,
+                delayAfter: speech[this.line].speed,
+                isSpace: letter === " ",
+            })
         })
-    })
     
-    displaySpeechTextLetter(letters);
-    
-}
-
-function displaySpeechTextLetter (letterList) {
-    var next = letterList.splice(0, 1)[0];
-    next.span.classList.add("revealed");
-
-    var delay = next.isSpace ? 0 : next.delayAfter;
-
-    if (letterList.length > 0) {
-        isAMUNPCSpeaking = true;
-
-        setTimeout(function () {
-            displaySpeechTextLetter(letterList);
-        }, delay)
+        this.displaySpeechTextLetter(letters);
     }
 
-    if (letterList.length == 0) {
-        isAMUNPCSpeaking = false;
+    this.displaySpeechTextLetter = function (letterList) {
+        var next = letterList.splice(0, 1)[0];
+        next.span.classList.add("revealed");
+
+        var delay = next.isSpace ? 0 : next.delayAfter;
+
+        if (letterList.length > 0) {
+            this.isAMUNPCSpeaking = true;
+
+            setTimeout(function () {
+                self.displaySpeechTextLetter(letterList);
+            }, delay)
+        }
+
+        if (letterList.length == 0) {
+            this.isAMUNPCSpeaking = false;
+        }
     }
 }
 
+let awfulSpeechDudeObj = new AwfulSpeechDude(); // Create the new awful speech dude object
 
-//
-//
-//
-//
-//
-// Player Speech
-//
-//
-//
-//
-//
-
-// Get the players speech bubble
-const playerSpeechBubble = document.querySelector(".playerText");
-
-// Only fire once, set near mailbox to true when Y Pos is met
-var mailMessagePlayed = false;
-var isPlayerCharacterNearMailbox = false;
-
-// Bool to track if the player character is currently speaking
-var isPlayerCharacterSpeaking = false;
-
-// Create the possible player text lines
-const playerLines = [
-    "I SHOULD MOVE MY MAILBOX CLOSER. ",
-    "SERGEANT MAJOR'S WORDS ECHOED... ",
-    "GET OFF THE GRASS, SOLDIER! ",
-]
-
-var playerCharacterLetters = [];
-
-// Play player character's message
-function playerCharacterSpeak (lineNum) {
-    this.lineNum = lineNum;
-    //this.test = playerLines[this.lineNum].split("");
-    playerLines[this.lineNum].split("").forEach(letter => {
-        /*
-        */
-        var span = document.createElement("span");
-        span.textContent = letter;
-        playerSpeechBubble.appendChild(span);
-
-        playerCharacterLetters.push({
-            span: span,
-            delayAfter: speeds.normal,
-            isSpace: letter === " ",
-        })
-    })
-    
-    displayPlayerCharacterLetter(playerCharacterLetters);
-}
-
-// Display player character's text
-function displayPlayerCharacterLetter (letterList) {
-    var next = letterList.splice(0, 1)[0];
-    next.span.classList.add("Revealed");
-
-    var delay = next.isSpace ? 0 : next.delayAfter;
-
-    if (letterList.length > 0) {
-        isCharacterSpeaking = true;
-
-        setTimeout(function () {
-            displayPlayerCharacterLetter(letterList);
-        }, delay)
-    }
-
-    if (letterList == 0) {
-        isCharacterSpeaking = false;
-    }
-
-}
 
 //
 //
@@ -560,6 +617,7 @@ function displayPlayerCharacterLetter (letterList) {
 //
 //
 //
+
 
 // Get the speech bubble
 const ptGraderSpeechBubble = document.querySelector(".ptGraderSpeechBubble");
@@ -574,32 +632,34 @@ var ptGraderDirection = -3;
 
 function greetPlayerCharacter (nowTime) {
 
-    // If the player is at the Y pos and hasn't heard the message yet
-    if (isPlayerCharacterReadyForGreeting && !(greetingMessagePlayed)) {
-        ptGraderSpeechBubble.style.setProperty('opacity', '1');
-        ptGraderDirection = -1; // Set direction to right
-        console.log(getPixelSize());
-        greetingMessagePlayed = true; // Only fire once
-        timeStampForGreetingMessage = nowTime; // Only runs once so OK to set
-    }
-    
-    // If the player has heard the message
-    if (greetingMessagePlayed) {
-        
-        // Create the current delay
-        greetingDelay = nowTime - timeStampForGreetingMessage;
+    if (!(greetingFinished)) {
 
-        // Check the delay
-        if (greetingDelay >= 2000) {
-            ptGraderDirection = -3; // Set direction to left
-            // Hide the message
-            ptGraderSpeechBubble.style.setProperty('opacity', '0');
-            // Set greeting finished to true to stop this functions from being called in the game loop
-            greetingFinished = true;
+        // If the player is at the Y pos and hasn't heard the message yet
+        if (isPlayerCharacterReadyForGreeting && !(greetingMessagePlayed)) {
+            ptGraderSpeechBubble.style.setProperty('opacity', '1');
+            ptGraderDirection = -1; // Set direction to right
+            greetingMessagePlayed = true; // Only fire once
+            timeStampForGreetingMessage = nowTime; // Only runs once so OK to set
         }
+    
+        // If the player has heard the message
+        if (greetingMessagePlayed) {
+        
+            // Create the current delay
+            greetingDelay = nowTime - timeStampForGreetingMessage;
 
+            // Check the delay
+            if (greetingDelay >= 2000) {
+                ptGraderDirection = -3; // Set direction to left
+                // Hide the message
+                ptGraderSpeechBubble.style.setProperty('opacity', '0');
+                // Set greeting finished to true to stop this functions from being called in the game loop
+                greetingFinished = true;
+            }
+        }
     }
 }
+
 
 //
 //
@@ -613,6 +673,7 @@ function greetPlayerCharacter (nowTime) {
 //
 //
 
+
 const mailSpriteSheet = document.querySelector("#mail");
 const mailLetterClosed = document.querySelector(".mailClosed");
 
@@ -624,22 +685,25 @@ var mailBoxSceneFinished = false; // Completely done? If true, no longer called 
 
 function playMailBoxScene (nowTime) {
     
-    if (isPlayerCharacterAtMailbox && !(mailBoxScenePlayed)) {
-        mailSpriteSheet.style.setProperty('visibility', 'visible');
-        mailSpriteSheet.style.setProperty('animation', 'animate 3.8s steps(16)');
-        mailBoxSceneTimeStamp = nowTime; // Only called once
-        mailBoxScenePlayed = true;
+    if (!(mailBoxSceneFinished)) {
+
+        if (isPlayerCharacterAtMailbox && !(mailBoxScenePlayed)) {
+            mailLetterClosed.style.setProperty('visibility', 'hidden');
+            mailSpriteSheet.style.setProperty('visibility', 'visible');
+            mailSpriteSheet.style.setProperty('animation', 'animate 3.8s steps(16)');
+            mailBoxSceneTimeStamp = nowTime; // Only called once
+            mailBoxScenePlayed = true;
+        }
+
+        mailBoxSceneDiff = nowTime - mailBoxSceneTimeStamp; // Called continously until mail box scene finished is true
+
+        if (mailBoxScenePlayed && mailBoxSceneDiff >= 3800) {
+            mailSpriteSheet.style.setProperty('visibility', 'hidden');
+            mailLetterClosed.style.setProperty('visibility', 'visible');
+            mailBoxSceneFinished = true;
+            displayLetterForm();
+        }
     }
-
-    mailBoxSceneDiff = nowTime - mailBoxSceneTimeStamp; // Called continously until mail box scene finished is true
-
-    if (mailBoxScenePlayed && mailBoxSceneDiff >= 3800) {
-        mailSpriteSheet.style.setProperty('visibility', 'hidden');
-        mailLetterClosed.style.setProperty('visibility', 'visible');
-        mailBoxSceneFinished = true;
-        displayLetterForm();
-    }
-
 }
 
 const formletterController = document.querySelector(".formLetterController");
@@ -669,9 +733,24 @@ function hideLetterForm () {
 //
 //
 
-var x = 80;
+var x = 78;
 var y = 32;
 var held_directions = []; // State of which arrow keys are being held down
+const character = document.querySelector(".character");
+const characterSS = document.querySelector(".characterSpritesheet");
+var playerCharacterSprinting = false;
+
+/*
+function playerCharacter () {
+
+    var x = 78;
+    var y = 32;
+    var held_directions = []; // State of which arrow keys are being held down
+    const character = document.querySelector(".character");
+    const characterSS = document.querySelector(".characterSpritesheet");
+    var playerCharacterSprinting = false;
+
+}*/
 
 const placeCharacter = () => {
 
@@ -682,18 +761,23 @@ const placeCharacter = () => {
     const held_direction = held_directions[0];
 
     if (held_direction) {
-        if (held_direction === directions.down) { y += speed; }
-        if (held_direction === directions.up) { y -= speed; }
-        if (held_direction === directions.left) { x -= speed; }
-        if (held_direction === directions.right) { x += speed; }
+        if (held_direction === directions.down) { y += playerCharacterWalkSpeed; }
+        if (held_direction === directions.up) { y -= playerCharacterWalkSpeed; }
+        if (held_direction === directions.left) { x -= playerCharacterWalkSpeed; }
+        if (held_direction === directions.right) { x += playerCharacterWalkSpeed; }
         character.setAttribute("facing", held_direction);
+
+        if (playerCharacterSprinting) {
+            //playerCharacterSS.style.setProperty('background-position-y', `${getPixelSize() * -40}px`);
+        }
     }
     
-    character.setAttribute("walking", held_direction ? "true" : "false");
+    character.setAttribute("walking", (held_direction && !(playerCharacterSprinting)) ? "true" : "false");
+    character.setAttribute("sprinting", (held_direction && playerCharacterSprinting) ? "true" : "false");
 
     // Set the constriants / walls
-    var leftLimit = 16 * 14.5;
-    var rightLimit = 16 * 14.5;
+    var leftLimit = 230; // was 16 * 14.5;
+    var rightLimit = 230; // was 16 * 14.5;
     var topLimit = 16 * 10;
     var bottomLimit = 16 * 152;
     if (x < leftLimit) { x = leftLimit; }
@@ -704,14 +788,17 @@ const placeCharacter = () => {
     // If the player is at the PT Grader, set isPlayerCharacterReadyForGreeting to true
     if (y > 810) { isPlayerCharacterReadyForGreeting = true; }
 
-
     // If the player reaches the area to see the speech, set isPlayerCharacterReadyForSpeech to true
-    if (y > 1800) { isPlayerCharacterReadyForSpeech = true; }
-    if (y < 1800) { isPlayerCharacterReadyForSpeech = false; }
+    if (y > 1800) {
+        awfulSpeechDudeObj.isPlayerCharacterReadyForSpeech = true;
+    }
+    if (y < 1800) {
+        awfulSpeechDudeObj.isPlayerCharacterReadyForSpeech = false;
+    }
 
     // If the player reaches the mailbox & mailbox area, set true
     if (y > 2300) { isPlayerCharacterNearMailbox = true; }
-    if (y >= 16 * 151) { isPlayerCharacterAtMailbox = true; }
+    if (y >= 16 * 148) { isPlayerCharacterAtMailbox = true; }
 
     
     var camera_left = pixelSize * 100;
@@ -721,7 +808,6 @@ const placeCharacter = () => {
 
     character.style.transform = `translate3d( ${x * pixelSize}px, ${y * pixelSize}px, 0)`;
 }
-
 
 // Direction key state
 const directions = {
@@ -742,10 +828,11 @@ const keys = {
     Right: directions.right,
 }
 
+
 document.addEventListener("keydown", (e) => {
     var dir = keys[e.key];
     if (dir && held_directions.indexOf(dir) === -1) {
-        held_directions.unshift(dir)
+        held_directions.unshift(dir);
     }
 })
 
@@ -753,9 +840,216 @@ document.addEventListener("keyup", (e) => {
     var dir = keys[e.key];
     var index = held_directions.indexOf(dir);
     if (index > -1) {
-        held_directions.splice(index, 1)
+        held_directions.splice(index, 1);
     }
 });
+
+
+
+// Get the button elements
+var upBtn = document.querySelector(".upBtn");
+var downBtn = document.querySelector(".downBtn");
+var sprintBtn = document.querySelector(".sprint-btn");
+
+// Add the button touch screen listeners (touchstart, touchend, touchleave)
+sprintBtn.addEventListener("mouseup", sprintToggle);
+sprintBtn.addEventListener("touchend", sprintToggle);
+sprintBtn.addEventListener("touchleave", sprintToggle);
+
+upBtn.addEventListener("touchstart", walkUp);
+upBtn.addEventListener("mousedown", walkUp);
+upBtn.addEventListener("mouseup", walkUpCancel);
+upBtn.addEventListener("touchend", walkUpCancel);
+upBtn.addEventListener("touchleave", walkUpCancel);
+
+downBtn.addEventListener("touchstart", walkDown);
+downBtn.addEventListener("mousedown", walkDown);
+downBtn.addEventListener("mouseup", walkDownCancel);
+downBtn.addEventListener("touchend", walkDownCancel);
+downBtn.addEventListener("touchleave", walkDownCancel);
+
+// Handle the event
+const sprintBtnSS = document.querySelector(".sprint-btn");
+var sprintBtnYPos = 0; // Used for updating the sprite
+
+function sprintToggle () {
+    // Set a sprinting var to true
+    // Toggle with bool = !bool
+    playerCharacterSprinting = !playerCharacterSprinting;
+
+    // Change the movement speed
+    // Change the btn ss
+    if (playerCharacterSprinting) {
+        sprintBtnYPos = -32;
+        playerCharacterWalkSpeedModifier = 2.0;
+        sprintBtnSS.style.setProperty('background-position-y', `${getPixelSize() * -32}px`)
+    }
+
+    if (!playerCharacterSprinting) {
+        sprintBtnYPos = 0;
+        playerCharacterWalkSpeedModifier = 1.0;
+        sprintBtnSS.style.setProperty('background-position-y', '0px')
+    }
+    // Set a moving var to true when moving from the other functions below
+        // When moving var is true and so is sprinting
+            // Change the sprite sheet
+            // Make the sprite sheet change faster to take faster steps
+}
+
+var upBtnYPos = 0; // Used for updating the sprite
+
+function walkUp () {
+    // Change the button image
+    upBtn.style.setProperty('background-position-y', `${(getPixelSize() * -40)}px`);
+
+    upBtnYPos = -32;
+
+    var dir = keys.Up;
+    if (dir && held_directions.indexOf(dir) === -1) {
+        held_directions.unshift(dir);
+    }
+}
+
+function walkUpCancel () {
+    // Reset the button image
+    upBtn.style.setProperty('background-position-y', `${(getPixelSize() * 0)}px`);
+
+    upBtnYPos = 0;
+
+    var dir = keys.Up;
+    var index = held_directions.indexOf(dir);
+    if (index > -1) {
+        held_directions.splice(index, 1);
+    }
+}
+
+downBtnYPos = 0; // Used for updating the sprite
+
+// Handle the event
+function walkDown () {
+    // Change the button image
+    downBtn.style.setProperty('background-position-y', `${(getPixelSize() * -32)}px`);
+
+    downBtnYPos = -32;
+
+    var dir = keys.Down;
+    if (dir && held_directions.indexOf(dir) === -1) {
+        held_directions.unshift(dir);
+    }
+}
+
+function walkDownCancel () {
+    // Reset the button image
+    downBtn.style.setProperty('background-position-y', `${(getPixelSize() * 0)}px`);
+
+    downBtnYPos = 0;
+
+    var dir = keys.Down;
+    var index = held_directions.indexOf(dir);
+    if (index > -1) {
+        held_directions.splice(index, 1);
+    }
+}
+
+
+
+//
+//
+//
+//
+//
+// Player Speech
+//
+//
+//
+//
+//
+
+
+// Get the players speech bubble
+const playerSpeechBubble = document.querySelector(".playerText");
+
+// Only fire once, set near mailbox to true when Y Pos is met
+var mailMessagePlayed = false;
+var isPlayerCharacterNearMailbox = false;
+
+// Bool to track if the player character is currently speaking
+var isPlayerCharacterSpeaking = false;
+
+// Just temp time holder
+var timeSinceLastPlayerCharacterSpeech;
+
+// Create the possible player text lines
+const playerLines = [
+    "I SHOULD MOVE MY MAILBOX CLOSER. ",
+    "SERGEANT MAJOR'S WORDS ECHOED... ",
+    "GET OFF THE GRASS, SOLDIER! ",
+]
+
+
+function playerCharacterSpeechController () {
+
+    // Hide the speech bubble is time is met
+    if (nowTime - timeSinceLastPlayerCharacterSpeech > 3600) { playerSpeechBubble.style.setProperty('opacity', '0'); }
+
+    if (isPlayerCharacterNearMailbox && !(mailMessagePlayed) && !(isPlayerCharacterSpeaking)) {
+            timeSinceLastPlayerCharacterSpeech = nowTime;
+            playerSpeechBubble.innerHTML = "";
+            mailMessagePlayed = true;
+            playerSpeechBubble.style.setProperty('opacity', '1');
+            playerCharacterSpeak(0);
+
+            // If the elapsed time > some num, hide text
+            // I'm just working around this area right now, I should create the player character as an object later
+            // and then store important information inside of it like the last speech time and what not.
+        }
+}
+
+
+var playerCharacterLetters = [];
+
+// Play player character's message
+function playerCharacterSpeak (lineNum) {
+    this.lineNum = lineNum;
+    //this.test = playerLines[this.lineNum].split("");
+    playerLines[this.lineNum].split("").forEach(letter => {
+        /*
+        */
+        var span = document.createElement("span");
+        span.textContent = letter;
+        playerSpeechBubble.appendChild(span);
+
+        playerCharacterLetters.push({
+            span: span,
+            delayAfter: speeds.normal,
+            isSpace: letter === " ",
+        })
+    })
+    
+    displayPlayerCharacterLetter(playerCharacterLetters);
+}
+
+// Display player character's text
+function displayPlayerCharacterLetter (letterList) {
+    var next = letterList.splice(0, 1)[0];
+    next.span.classList.add("revealed");
+
+    var delay = next.isSpace ? 0 : next.delayAfter;
+
+    if (letterList.length > 0) {
+        isCharacterSpeaking = true;
+
+        setTimeout(function () {
+            displayPlayerCharacterLetter(letterList);
+        }, delay)
+    }
+
+    if (letterList == 0) {
+        isCharacterSpeaking = false;
+    }
+
+}
+
 
 // 
 //
@@ -770,99 +1064,57 @@ document.addEventListener("keyup", (e) => {
 //
 
 
-var speechLine = 0; // Current sentence number for the speech
-var lastFrameTimeStamp; // Currently used to get deltaTime
+
 var FPS = 30; // Currently used for the setTimeout (not sure if it's working/doing anything)
 var deltaTime; // Currently unused
 var lastMessageTime; // Time of the last speech message occurred 
-var timeSinceLastMessage = 0; // Difference between lastMessageTime and now
 var nowTime = new Date().getTime(); // Now, updated every tick below
-var previousDelay = (speech[speechLine].speed * speech[speechLine].string.length) * 1.5; // Post speech sentence delay
+var lastFrameTimeStamp; // Currently used to get deltaTime
+var pixelSize;
 
-// Just temp time holder
-var timeSinceLastPlayerCharacterSpeech;
 
 const step = () => {
 
     setTimeout(function () {
-        // Used for getting the Delta time | Not yet used
+        // Used for getting the Delta time
         if (lastFrameTimeStamp === undefined) {
             // Similar to nowTime, but isn't updated every tick (kinda, I think it's broken)
             lastFrameTimeStamp = new Date().getTime();
         }
 
-        deltaTime = (new Date().getTime() - lastFrameTimeStamp) / 1000; // Not yet used
-
         nowTime = new Date().getTime(); // The current time | Updated every call
+        deltaTime = (nowTime - lastFrameTimeStamp) / 1000;
 
+        pixelSize = getPixelSize();
 
-        //
-        //
-        // Move all this stuff (awful speech) into it's own function to clean up the game loop
-        //
-        //
+        // Set the player characters speed
+        playerCharacterWalkSpeed = playerCharacterWalkSpeedModifier * deltaTime * globalSpeed * globalSpeedModifier;
+        // Set the runner NPCs speed
+        runnerSpeed = runnerSpeedModifier * deltaTime * globalSpeed * globalSpeedModifier;
+        // Set the generator NPCs speed
+        generatorSpeed = generatorNPCSpeedModifier * deltaTime * globalSpeed * globalSpeedModifier;
+        // Set the tuber NPCs speed
+        tuberSpeed = floatSpeedModifier * deltaTime * globalSpeed * globalSpeedModifier;
 
-        timeSinceLastMessage = nowTime - lastMessageTime; // Time since the last speech message compared to nowTime
+        runner1Obj.run(runnerSpeed);
+        runner2Obj.run(runnerSpeed);
 
-        // If timeSinceLastMessage doesn't have a value yet
-        // Meaning it's the first time it's being ran
-        if (!(timeSinceLastMessage > -1)) {
-            // Set the value to 11000 (A number large enough for "most" sentences)
-            timeSinceLastMessage = 11000;
-        }
-        
-        // If player is ready (meaning he's past Y 1800 | See placeCharacter()) and
-        // If the current sentence is less than the total number of sentences and
-        // If the person isn't already speaking: continue
-        if (isPlayerCharacterReadyForSpeech && speechLine < speech.length && !(isAMUNPCSpeaking)) {
-            // If the line that the speaker is on, is past the first line
-            if (speechLine > 0) {
-                // Get the speech speed - 1 index to match the delay with the sentence speed
-                // Otherwise it'd be for the next line speed which may be different
-                previousDelay = (speech[speechLine-1].speed * speech[speechLine-1].string.length) * 1.5;
-            }
-            
-            // If the previousDelay timer has been met or exceeded by timeSinceLastMessage
-            if (timeSinceLastMessage >= previousDelay) {
-                container.innerHTML = ""; // Clear the current HTML spans
-                playSpeech(speechLine); // Play the next speech sentence
-                timeSinceLastMessage = 0; // Reset the last speech sentence elapsed time to 0
-                lastMessageTime = new Date().getTime(); // Reset the time stamp of the last message
-                speechLine++; // Go to the next speech sentence
-            }
-            
-        }
+        generatorNPCObj.animate(generatorSpeed, lastFrameTimeStamp, pixelSize);
 
-        
-        if (isPlayerCharacterNearMailbox && !(mailMessagePlayed) && !(isPlayerCharacterSpeaking)) {
-            timeSinceLastPlayerCharacterSpeech = nowTime;
-            console.log("Test");
-            playerSpeechBubble.innerHTML = "";
-            mailMessagePlayed = true;
-            playerSpeechBubble.style.setProperty('opacity', '1');
-            playerCharacterSpeak(0);
+        tuber1Obj.float(tuberSpeed);
+        tuber2Obj.float(tuberSpeed);
 
-            // If the elapsed time > some num, hide text
-            // I'm just working around this area right now, I should create the player character as an object later
-            // and then store important information inside of it like the last speech time and what not.
-            // It's a bit messy
-        }
-        
-        if (nowTime - timeSinceLastPlayerCharacterSpeech > 3100) { playerSpeechBubble.style.setProperty('opacity', '0'); }
-        
+        playerCharacterSpeechController();
         placeCharacter();
+        greetPlayerCharacter(lastFrameTimeStamp);
+        awfulSpeechDudeObj.playAwfulSpeech();
+        playMailBoxScene(lastFrameTimeStamp);
 
         // Keep updating the background position based on the current set direction
-        // Otherwise the BG pos would be messed up
         ptGraderSpriteSheet.style.setProperty('background-position-y', `${(getPixelSize() * 16) * ptGraderDirection}px`);
-        if (!(greetingFinished)) {
-            greetPlayerCharacter(lastFrameTimeStamp);
-        }
-        
-
-        if (!(mailBoxSceneFinished)) {
-            playMailBoxScene(lastFrameTimeStamp);
-        }
+        sprintBtnSS.style.setProperty('background-position-y', `${getPixelSize() * sprintBtnYPos}px`);
+        upBtn.style.setProperty('background-position-y', `${getPixelSize() * upBtnYPos}px`);
+        downBtn.style.setProperty('background-position-y', `${getPixelSize() * downBtnYPos}px`);
 
         lastFrameTimeStamp = new Date().getTime(); // Updated every tick, is this correct?
         // It may be, since the time stamp would be after all the tick actions have been performed.
@@ -870,15 +1122,17 @@ const step = () => {
     }, 1000 / FPS);
     
     
-    tuber1Obj.float();
-    tuber2Obj.float();
-    runner1Obj.run();
-    runner2Obj.run();
     window.requestAnimationFrame(() => {
         step();
     })
 }
 step(); // Take the first step
+
+// Check if the user is on mobile, if so, show the mobile controls
+if (isUserOnTouchDevice()) {
+    var allTouchBtns = document.querySelector(".allBtns");
+    allTouchBtns.style.setProperty("visibility", "visible");
+}
 
 //
 //
@@ -892,6 +1146,19 @@ step(); // Take the first step
 //
 //
 
+
+function isUserOnTouchDevice () {
+    return (('ontouchstart' in window) ||
+        (navigator.maxTouchPoints > 0) ||
+        (navigator.msMaxTouchPoints > 0));
+}
+
+function clamp (num, min, max) {
+    var clamped = Math.min(Math.max(num, min), max);
+
+    return clamped;
+}
+
 function randomInt (min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
@@ -900,8 +1167,9 @@ function randomInt (min, max) {
 }
 
 
-var pixelSize;
 function getPixelSize () {
+    var pixelSize;
+
     // Get the pixel size each iteration to ensure the most accurate value is available
     pixelSize = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--pixel-size'));
 

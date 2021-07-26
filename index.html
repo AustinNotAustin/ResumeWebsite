@@ -1,4 +1,15 @@
 <!DOCTYPE html>
+
+<!-- Restrict user's from caching -->
+    <?php
+    
+    //set headers to NOT cache a page
+    header("Cache-Control: no-cache, must-revalidate"); //HTTP 1.1
+    header("Pragma: no-cache"); //HTTP 1.0
+    header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
+    
+    ?>
+    
 <html lang="en">
     <head>
         <meta charset="utf-8" />
@@ -20,21 +31,46 @@
 
                     <!-- Map objects -->
                     <div class="river">
-                        <img id="river" src="/img/RiverSpriteSheet.png">
+                        <div class="riverSpriteSheet"></div>
+                    </div>
+
+                    <div class="generator">
+                        <div class="generatorSpriteSheet"></div>
+                    </div>
+
+                    <div class="palmTree">
+                        <div class="palmTreeSpriteSheet"></div>
+                    </div>
+
+                    <div class="palmTree palmTree2">
+                        <div class="palmTreeSpriteSheet palmTreeSpriteSheet1"></div>
                     </div>
                     
                     
                     <!-- Speech Box -->
-                        <div class="text"></div>
-
+                    <div class="text"></div>
+                    
                     
                     <!-- NPCs -->
+                    <div class="doggo doggo1">
+                        <div class="doggoSpriteSheet doggo1SpriteSheet"></div>
+                    </div>
+                    
                     <div class="soldier soldier1 pixelArt">
                         <div class="soldierSpriteSheet soldier1SpriteSheet pixelArt"></div>
                     </div>
-
+                    
                     <div class="soldier soldier2 pixelArt">
                         <div class="soldierSpriteSheet soldier2SpriteSheet pixelArt"></div>
+                    </div>
+                    
+                    <!-- PT Test Grader -->
+                    <div class="soldier soldier3">
+                        <div class="soldierSpriteSheet soldier3SpriteSheet"></div>
+                    </div>
+
+                    <div class="soldier soldier4">
+                        <div class="soldierSpriteSheet soldier4SpriteSheet"></div>
                     </div>
 
                     <div class="tuber tuber1 pixelArt">
@@ -44,104 +80,116 @@
                     <div class="tuber tuber2 pixelArt">
                         <div class="tuberSheet tuber2sheet pixelArt"></div>
                     </div>
-                    
 
+                    <div class="grad grad1">
+                        <div class="gradSpriteSheet grad1SpriteSheet"></div>
+                    </div>
+                    
+                    <div class="grad grad2">
+                        <div class="gradSpriteSheet grad2SpriteSheet"></div>
+                    </div>
+
+                    <div class="grad grad3">
+                        <div class="gradSpriteSheet grad3SpriteSheet"></div>
+                    </div>
+
+                    <div class="grad grad4">
+                        <div class="gradSpriteSheet grad4SpriteSheet"></div>
+                    </div>
+
+                    <div class="grad grad5">
+                        <div class="gradSpriteSheet grad5SpriteSheet"></div>
+                    </div>
+                    
                     <!-- Bridge -->
                     <div>
-                        <img id="bridge" src="/img/Bridge.png">
+                        <div id="bridge"></div>
                     </div>
                     
                     
                     <!-- Flags -->
                     <div class="armyFlag">
-                        <img id="armyFlag" src="/img/Flag/FlagSheet.png">
+                        <div id="armyFlagSS"></div>
                     </div>
                     
                     <div class="usFlag">
-                        <img id="usFlag" src="/img/flag/USFlagSheet.png">
+                        <div id="usFlagSS"></div>
                     </div>
                     
                     
                     <!-- Signs -->
+                    <div class="sign goDownSign">
+                        <div class="signSS goDownSignSS"></div>
+                    </div>
+
                     <div class="sign armySign">
-                        <img id="sign" src="/img/Signs/ArmySigns.png" style="animation: animate 3.1s steps(2) infinite;">
+                        <div class="signSS armySignSS"></div>
                     </div>
 
                     <div class="sign cssSign">
-                        <img id="sign" src="/img/Signs/CSSSign.png" style="animation: animate 3.4s steps(2) infinite;">
+                        <div class="signSS cssSignSS"></div>
                     </div>
 
                     <div class="sign htmlSign">
-                        <img id="sign" src="/img/Signs/HTMLSign.png" style="animation: animate 3.6s steps(2) infinite;">
+                        <div class="signSS htmlSignSS"></div>
                     </div>
 
                     <div class="sign javaSign">
-                        <img id="sign" src="/img/Signs/JavaSign.png" style="animation: animate 3.1s steps(2) infinite;">
+                        <div class="signSS javaSignSS"></div>
                     </div>
 
                     <div class="sign mySqlSign">
-                        <img id="sign" src="/img/Signs/MySQLSign.png" style="animation: animate 3.5s steps(2) infinite;">
+                        <div class="signSS mySqlSignSS"></div>
                     </div>
 
                     <div class="sign pythonSign">
-                        <img id="sign" src="/img/Signs/PythonSign.png" style="animation: animate 3.2s steps(2) infinite;">
+                        <div class="signSS pythonSignSS"></div>
                     </div>
 
                     <div class="sign javaScriptSign">
-                        <img id="sign" src="/img/Signs/JavaScriptSign.png" style="animation: animate 3.3s steps(2) infinite;">
+                        <div class="signSS javaScriptSignSS"></div>
                     </div>
 
                     <div class="sign leaderSign">
-                        <img id="sign" src="/img/Signs/LeaderSign.png">
+                        <div class="signSS leaderSignSS"></div>
                     </div>
 
                     <div class="sign netSysSign">
-                        <img id="sign" src="/img/Signs/NetSysSign.png">
+                        <div class="signSS netSysSignSS"></div>
                     </div>
 
                     <div class="sign nurseSign">
-                        <img id="sign" src="/img/Signs/NurseSign.png">
-                    </div>
-
-                    <div class="sign nurseSign">
-                        <img id="sign" src="/img/Signs/NurseSign.png">
+                        <div class="signSS nurseSignSS"></div>
                     </div>
                     
                     <div class="sign degreeSign">
-                        <img id="sign" src="/img/Signs/DegreeSign.png">
+                        <div class="signSS degreeSignSS"></div>
                     </div>
 
                     
                     
                     <!-- Numbers for stop clock -->
                     <div class="numbers0-6 tenMin">
-                        <img id="numbers0-6" src="/img/ClockNumbers0-6.png" style="animation: animate 3600s steps(6) infinite">
+                        <div class="numbers-hours" id="numbers0-6"></div>
                     </div>
                     
                     <div class="numbers oneMin">
-                        <img id="numbers" src="/img/ClockNumbers.png" style="animation: animate 600s steps(10) infinite">
+                        <div class="numbers-minutes" id="numbers"></div>
                     </div>
                     
                     <div class="numbers0-6 tenSec">
-                        <img id="numbers0-6" src="/img/ClockNumbers0-6.png" style="animation: animate 60s steps(6) infinite">
+                        <div class="numbers-tens-seconds" id="numbers0-6"></div>
                     </div>
                     
                     <div class="numbers hunSec">
-                        <img id="numbers" src="/img/ClockNumbers.png" style="animation: animate 10s steps(10) infinite">
-                    </div>
-                    
-
-
-                    <!-- PT Test Grader -->
-                    <div class="soldier soldier3">
-                        <div class="soldierSpriteSheet soldier3SpriteSheet"></div>
+                        <div class="numbers-seconds" id="numbers"></div>
                     </div>
 
                 </div>
                 
                 <!-- Player Character -->
                 <div>
-                    <div class="character pixelArt" facing="down" walking="true">
+                    <div class="character pixelArt" facing="down" walking="true" sprinting="false">
                         <div class="characterSpritesheet pixelArt"></div>
                     </div>
                     
@@ -152,45 +200,63 @@
 
                 <!-- Mailbox has to be on top of Player Character to give proper visual effect -->
                 <div class="mailbox">
-                    <img id="mailbox" src="/img/Mailbox.png">
+                    <div id="mailbox"></div>
                 </div>
 
                 
                 
                 <div class="mail pixelArt">
-                    <img id="mail" src="/img/MailSpriteSheet.png">
+                    <div id="mail"></div>
                 </div>     
 
-                <img src="/img/MailLetterClosed.png" class="mailClosed" onclick="displayLetterForm()">
+                <div class="mailClosed glow" onclick="displayLetterForm()">
+                    <div class="mailClosedSpriteSheet"></div>
+                </div>
             </div>
             
+
             <!-- Player Character's Speech Bubble -->
             <div class="playerText speechBubble"></div>
             
+
+            <!-- Control Buttons / UI -->
+
+            <div class="allBtns pixelArt">
+                <div class="sprint-btn single-btn"></div>
+                <div class="upBtn single-btn">
+                    <div class="upBtnSpriteSheet singleBtnSpriteSheet"></div>
+                </div>
+                <div class="downBtn single-btn">
+                    <div class="upBtnSpriteSheet singleBtnSpriteSheet"></div>
+                </div>
+            </div>
+
+
+            <!-- Form Section -->
 
             <form class="pixelArt formLetterController" action="/php/sendEmail.php" method="post">
                 <!-- Letter Form for user to send me a message -->
                 <div class="pixelArt letterForm"></div>
                 
                 <!-- Letter form fields -->
-                <input class="formText formCloseBtn" type="button" name="closeBtn" id="closeBtn" value="x" onclick="hideLetterForm()">
+                <input class="formText formCloseBtn" type="button" name="closeBtn" id="closeBtn" onclick="hideLetterForm()">
 
                 <label class="formText formTextLabel" for="message">DEAR AUSTIN,</label>
-                <textarea class="formTextField speechBubble" name="message" id="message" cols="44" rows="11" maxlength="495" placeholder="ENTER YOUR MESSAGE HERE!" required></textarea>
+                <textarea class="formTextField speechBubble" name="message" id="message" maxlength="495" placeholder="ENTER YOUR MESSAGE HERE!" required></textarea>
                 
                 <label class="formText formEmailLabel" for="email">MY EMAIL IS:</label>
-                <input class="formEmailField speechBubble" type="email" name="email" id="email" placeholder="ENTER YOUR EMAIL HERE!" required>
+                <input class="formEmailField speechBubble" type="email" name="email" id="email" maxlength="45" placeholder="ENTER YOUR EMAIL HERE!" required>
                 
                 <label class="formText formNameLabel" for="name">FROM,</label>
-                <input class="formNameField speechBubble" type="text" name="name" id="name" placeholder="ENTER YOUR NAME HERE!" required>
+                <input class="formNameField speechBubble" type="text" name="name" id="name" maxlength="25" placeholder="ENTER YOUR NAME HERE!" required>
                 
                 <input class="formText submitFormLetter" type="submit" value="SUBMIT">
             </form>
             
+
         </div>
     </body>
         
     <footer>
-        
     </footer>
 </html>
