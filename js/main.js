@@ -1240,7 +1240,6 @@ function getPixelSize () {
 }
 
 // Disable CTRL + Scroll Wheel zooming
-/*
 document.addEventListener('wheel', (e) => {
     
     if (e.ctrlKey) e.preventDefault()
@@ -1251,4 +1250,3 @@ document.addEventListener('resize', (e) => {
 window.visualViewport.addEventListener('resize', (e) => {
     e.preventDefault()
 },{passive: false, capture: true, bubbling: true})
-*/
