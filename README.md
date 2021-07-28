@@ -7,4 +7,4 @@ On the trip to check my mail, the player will learn about me with resume notable
 
 
 This is still a work in progress and I have more ideas currently but haven't been able to implement them yet.
-One for sure addition will be an option to view a profession or interactive resume for those who don't want to play a game.
+One for sure addition will be an option to view either a professional or interactive resume for those who don't want to play a game.
