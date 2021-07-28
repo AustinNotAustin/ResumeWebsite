@@ -21,7 +21,7 @@ function getUserIPAddress() {
 }
 
 // Simplified for extra security
-if (isset($_POST['name'])) {
+if (isset($_POST)) {
     $name = (string)filter_input(INPUT_POST, 'name', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $email = (string)filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
     $message = (string)filter_input(INPUT_POST, 'message', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
