@@ -7,7 +7,7 @@ const globalSpeedModifier = 1;
 const globalSpeed = 60;
 var playerCharacterWalkSpeedModifier = 1;
 const runnerSpeedModifier = 0.5;
-const floatSpeedModifier = 4.4;
+const floatSpeedModifier = 5.2;
 const generatorNPCSpeedModifier = 0.5;
 
 // Player speeds
@@ -48,8 +48,8 @@ function Tuber (tuberClass, tuberSheet) {
     // Get the pixel size each iteration to ensure the most accurate value is available
     //var pixelSize = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--pixel-size'));
     
-    this.x = -48;
-    this.y = 0;
+    this.x = 350;
+    this.y = 430;
     this.skin = 0;
     this.tuberClass = tuberClass;
     this.tuberSheet = tuberSheet;
@@ -132,10 +132,10 @@ function Runner (runnerClass, runnerSpriteSheet, x, y) {
     this.y = y;
     
     // Set the Sprite Sheet pxs to direction 
-    var up = -32;
-    var runnerDown = 0;
-    var left = -48;
-    var right = -16;
+    var up = -120;
+    var runnerDown = -80;
+    var left = -140;
+    var right = -100;
     
     var px;
     
@@ -247,8 +247,6 @@ function generatorNPC () {
 
     this.animate = function (speed, timeStamp, px) {
 
-        //console.log("Speed: ", speed);
-
         if (isNPCPaused) {
 
             if (timeStamp - pauseStart >= pauseLimit) {
@@ -298,7 +296,7 @@ function generatorNPC () {
             }
         }
 
-        this.spriteSheet.style.setProperty("background-position-y", `${dirNum * px * 16}px`);
+        this.spriteSheet.style.setProperty("background-position-y", `${dirNum * px * 20}px`);
         this.divHolder.style.transform = `translate3d( ${0 * px}px, ${this.y * px}px, 0)`;
     }
 }
@@ -721,6 +719,8 @@ function hideLetterForm () {
     formletterController.style.setProperty('visibility', 'hidden');
 }
 
+
+
 //
 //
 //
@@ -733,91 +733,205 @@ function hideLetterForm () {
 //
 //
 
-var x = 78;
-var y = 32;
-var held_directions = []; // State of which arrow keys are being held down
-const character = document.querySelector(".character");
-const characterSS = document.querySelector(".characterSpritesheet");
-var playerCharacterSprinting = false;
 
-/*
+
 function playerCharacter () {
 
-    var x = 78;
-    var y = 32;
-    var held_directions = []; // State of which arrow keys are being held down
+    this.wasSprintToggled = false;
+    
+    var heldDirections = []; // State of which arrow keys are being held down
     const character = document.querySelector(".character");
-    const characterSS = document.querySelector(".characterSpritesheet");
-    var playerCharacterSprinting = false;
+    
+    this.isPlayerCharacterSprinting = false;
 
-}*/
+    this.x = 78;
+    this.y = 32;
+    
+    // Set the constriants / walls
+    const leftLimit = 230; // was 16 * 14.5;
+    const rightLimit = 230; // was 16 * 14.5;
+    const topLimit = 16 * 10;
+    const bottomLimit = 16 * 152;
 
-const placeCharacter = () => {
-
-    // Get the pixelSize var from the CSS sheet
-    var pixelSize = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--pixel-size'));
-
-    // The most current held direction
-    const held_direction = held_directions[0];
-
-    if (held_direction) {
-        if (held_direction === directions.down) { y += playerCharacterWalkSpeed; }
-        if (held_direction === directions.up) { y -= playerCharacterWalkSpeed; }
-        if (held_direction === directions.left) { x -= playerCharacterWalkSpeed; }
-        if (held_direction === directions.right) { x += playerCharacterWalkSpeed; }
-        character.setAttribute("facing", held_direction);
-
-        if (playerCharacterSprinting) {
-            //playerCharacterSS.style.setProperty('background-position-y', `${getPixelSize() * -40}px`);
+    this.keyDown = function (event) {
+        var direction = keys[event.key];
+        if (direction && heldDirections.indexOf(direction) === -1) {
+            heldDirections.unshift(direction);
         }
     }
-    
-    character.setAttribute("walking", (held_direction && !(playerCharacterSprinting)) ? "true" : "false");
-    character.setAttribute("sprinting", (held_direction && playerCharacterSprinting) ? "true" : "false");
 
-    // Set the constriants / walls
-    var leftLimit = 230; // was 16 * 14.5;
-    var rightLimit = 230; // was 16 * 14.5;
-    var topLimit = 16 * 10;
-    var bottomLimit = 16 * 152;
-    if (x < leftLimit) { x = leftLimit; }
-    if (x > rightLimit) { x = rightLimit; }
-    if (y < topLimit) { y = topLimit; }
-    if (y > bottomLimit) { y = bottomLimit }
-
-    // If the player is at the PT Grader, set isPlayerCharacterReadyForGreeting to true
-    if (y > 810) { isPlayerCharacterReadyForGreeting = true; }
-
-    // If the player reaches the area to see the speech, set isPlayerCharacterReadyForSpeech to true
-    if (y > 1800) {
-        awfulSpeechDudeObj.isPlayerCharacterReadyForSpeech = true;
+    this.keyUp = function (event) {
+        var direction = keys[event.key];
+        var index = heldDirections.indexOf(direction);
+        if (index > -1) {
+            heldDirections.splice(index, 1);
+        }
     }
-    if (y < 1800) {
-        awfulSpeechDudeObj.isPlayerCharacterReadyForSpeech = false;
+/*
+    this.addEventListener("keydown", (e) => {
+            var dir = this.keys[e.key];
+            if (dir && this.heldDirections.indexOf(dir) === -1) {
+            this.heldDirections.unshift(dir);
+            }
+        });
+*/
+    this.checkEvents = function () {
+        
+        // If the player is at the PT Grader, set isPlayerCharacterReadyForGreeting to true
+        if (this.y > 810) { isPlayerCharacterReadyForGreeting = true; }
+
+        // If the player reaches the area to see the speech, set isPlayerCharacterReadyForSpeech to true
+        if (this.y > 1800) {awfulSpeechDudeObj.isPlayerCharacterReadyForSpeech = true; }
+        if (this.y < 1800) { awfulSpeechDudeObj.isPlayerCharacterReadyForSpeech = false; }
+
+        // If the player reaches the mailbox & mailbox area, set true
+        if (this.y > 2300) { isPlayerCharacterNearMailbox = true; }
+        if (this.y >= 16 * 148) { isPlayerCharacterAtMailbox = true; }
     }
 
-    // If the player reaches the mailbox & mailbox area, set true
-    if (y > 2300) { isPlayerCharacterNearMailbox = true; }
-    if (y >= 16 * 148) { isPlayerCharacterAtMailbox = true; }
+    this.checkConstraints = function () {
+        if (this.x < leftLimit) { this.x = leftLimit; }
+        if (this.x > rightLimit) { this.x = rightLimit; }
+        if (this.y < topLimit) { this.y = topLimit; }
+        if (this.y > bottomLimit) { this.y = bottomLimit }
 
-    
-    var camera_left = pixelSize * 100;
-    var camera_top = pixelSize * 50;
+    }
 
-    map.style.transform = `translate3d( ${-x * pixelSize + camera_left}px, ${-y * pixelSize + camera_top}px, 0)`;
+    this.walkUp = function (event) {
+        event.preventDefault(); // Stop double calls for taps
+        // Change the button image
+        upBtn.style.setProperty('background-position-y', `${(getPixelSize() * -32)}px`);
 
-    character.style.transform = `translate3d( ${x * pixelSize}px, ${y * pixelSize}px, 0)`;
+        upBtnYPos = -32;
+
+        var dir = keys.Up;
+        if (dir && heldDirections.indexOf(dir) === -1) {
+            heldDirections.unshift(dir);
+            }
+    }
+
+    this.walkUpCancel = function (event) {
+        event.preventDefault(); // Stop double calls for taps
+        // Reset the button image
+        upBtn.style.setProperty('background-position-y', `${(getPixelSize() * 0)}px`);
+
+        upBtnYPos = 0;
+
+        var dir = keys.Up;
+        var index = heldDirections.indexOf(dir);
+        if (index > -1) {
+            heldDirections.splice(index, 1);
+        }
+    }
+
+    // Handle the event
+    this.walkDown = function (event) {
+        event.preventDefault(); // Stop double calls for taps
+        // Change the button image
+        downBtn.style.setProperty('background-position-y', `${(getPixelSize() * -32)}px`);
+
+        downBtnYPos = -32;
+
+        var dir = keys.Down;
+        if (dir && heldDirections.indexOf(dir) === -1) {
+            heldDirections.unshift(dir);
+        }
+    }
+
+    this.walkDownCancel = function (event) {
+        event.preventDefault(); // Stop double calls for taps
+        // Reset the button image
+        downBtn.style.setProperty('background-position-y', `${(getPixelSize() * 0)}px`);
+
+        downBtnYPos = 0;
+
+        var dir = keys.Down;
+        var index = heldDirections.indexOf(dir);
+        if (index > -1) {
+            heldDirections.splice(index, 1);
+        }
+    }
+
+    this.changeSS = function (heldDirection) {
+        character.setAttribute("walking", (heldDirection && !(this.isPlayerCharacterSprinting)) ? "true" : "false");
+        character.setAttribute("sprinting", (heldDirection && this.isPlayerCharacterSprinting) ? "true" : "false");
+    }
+
+    this.animate = function (pixelSize) {
+        
+        var camera_left = pixelSize * 100;
+        var camera_top = pixelSize * 80;
+        
+        // The most current held direction
+        const heldDirection = heldDirections[0];
+
+        // If the user is holding a direction button
+        if (heldDirection) {
+
+            if (!(this.isPlayerCharacterSprinting)) {
+                if (heldDirection === directions.down) { this.y += playerCharacterWalkSpeed; }
+                if (heldDirection === directions.up) { this.y -= playerCharacterWalkSpeed; }
+                if (heldDirection === directions.left) { this.x -= playerCharacterWalkSpeed; }
+                if (heldDirection === directions.right) { this.x += playerCharacterWalkSpeed; }
+
+                if (this.wasSprintToggled) {
+                    character.setAttribute("runDir", "");
+                    this.wasSprintToggled = false;
+                }
+
+                character.setAttribute("walkDir", heldDirection);
+            }
+            
+            if (this.isPlayerCharacterSprinting) {
+                if (heldDirection === directions.down) { this.y += playerCharacterWalkSpeed; }
+                if (heldDirection === directions.up) { this.y -= playerCharacterWalkSpeed; }
+                if (heldDirection === directions.left) { this.x -= playerCharacterWalkSpeed; }
+                if (heldDirection === directions.right) { this.x += playerCharacterWalkSpeed; }
+                character.setAttribute("runDir", heldDirection);
+                character.setAttribute("walkDir", heldDirection);
+            }
+        }
+        
+        if (!heldDirection) {
+            character.setAttribute("runDir", "");
+        }
+
+        
+        this.checkConstraints();
+        this.checkEvents();
+        this.changeSS(heldDirection);
+        
+        map.style.transform = `translate3d( ${-this.x * pixelSize + camera_left}px, ${-this.y * pixelSize + camera_top}px, 0)`;
+        character.style.transform = `translate3d( ${this.x * pixelSize}px, ${this.y * pixelSize}px, 0)`;
+    }
+
 }
 
+let mainCharacterObj = new playerCharacter();
+
+//
+//
+//
+//
+//
+// Listeners
+//
+//
+//
+//
+//
+
+
+
 // Direction key state
-const directions = {
+var directions = {
     up: "up",
     down: "down",
     left: "left",
     right: "right",
 }
 
-const keys = {
+var keys = {
     ArrowUp: directions.up,
     ArrowDown: directions.down,
     ArrowLeft: directions.left,
@@ -829,21 +943,8 @@ const keys = {
 }
 
 
-document.addEventListener("keydown", (e) => {
-    var dir = keys[e.key];
-    if (dir && held_directions.indexOf(dir) === -1) {
-        held_directions.unshift(dir);
-    }
-})
-
-document.addEventListener("keyup", (e) => {
-    var dir = keys[e.key];
-    var index = held_directions.indexOf(dir);
-    if (index > -1) {
-        held_directions.splice(index, 1);
-    }
-});
-
+document.addEventListener("keydown", mainCharacterObj.keyDown);
+document.addEventListener("keyup", mainCharacterObj.keyUp);
 
 
 // Get the button elements
@@ -852,43 +953,52 @@ var downBtn = document.querySelector(".downBtn");
 var sprintBtn = document.querySelector(".sprint-btn");
 
 // Add the button touch screen listeners (touchstart, touchend, touchleave)
-sprintBtn.addEventListener("mouseup", sprintToggle);
-sprintBtn.addEventListener("touchend", sprintToggle);
-sprintBtn.addEventListener("touchleave", sprintToggle);
+sprintBtn.addEventListener("mousedown", sprintToggle, false);
+sprintBtn.addEventListener("touchend", sprintToggle, false);
+//sprintBtn.addEventListener("touchend", sprintToggle);
+//sprintBtn.addEventListener("touchleave", sprintToggle);
 
-upBtn.addEventListener("touchstart", walkUp);
-upBtn.addEventListener("mousedown", walkUp);
-upBtn.addEventListener("mouseup", walkUpCancel);
-upBtn.addEventListener("touchend", walkUpCancel);
-upBtn.addEventListener("touchleave", walkUpCancel);
+upBtn.addEventListener("touchstart", mainCharacterObj.walkUp, false);
+upBtn.addEventListener("mousedown", mainCharacterObj.walkUp, false);
+upBtn.addEventListener("mouseup", mainCharacterObj.walkUpCancel, false);
+upBtn.addEventListener("mouseout", mainCharacterObj.walkUpCancel, false);
+upBtn.addEventListener("mouseleave", mainCharacterObj.walkUpCancel, false);
+upBtn.addEventListener("touchend", mainCharacterObj.walkUpCancel, false);
+upBtn.addEventListener("touchleave", mainCharacterObj.walkUpCancel, false);
 
-downBtn.addEventListener("touchstart", walkDown);
-downBtn.addEventListener("mousedown", walkDown);
-downBtn.addEventListener("mouseup", walkDownCancel);
-downBtn.addEventListener("touchend", walkDownCancel);
-downBtn.addEventListener("touchleave", walkDownCancel);
+downBtn.addEventListener("touchstart", mainCharacterObj.walkDown, false);
+downBtn.addEventListener("mousedown", mainCharacterObj.walkDown, false);
+downBtn.addEventListener("mouseup", mainCharacterObj.walkDownCancel, false);
+downBtn.addEventListener("mouseout", mainCharacterObj.walkDownCancel, false);
+downBtn.addEventListener("mouseleave", mainCharacterObj.walkDownCancel, false);
+downBtn.addEventListener("touchend", mainCharacterObj.walkDownCancel, false);
+downBtn.addEventListener("touchleave", mainCharacterObj.walkDownCancel, false);
 
 // Handle the event
 const sprintBtnSS = document.querySelector(".sprint-btn");
 var sprintBtnYPos = 0; // Used for updating the sprite
 
-function sprintToggle () {
+function sprintToggle (event) {
+    event.preventDefault(); // Stop double calls for taps
+    mainCharacterObj.wasSprintToggled = true;
+
     // Set a sprinting var to true
     // Toggle with bool = !bool
-    playerCharacterSprinting = !playerCharacterSprinting;
+    mainCharacterObj.isPlayerCharacterSprinting = !mainCharacterObj.isPlayerCharacterSprinting;
 
     // Change the movement speed
     // Change the btn ss
-    if (playerCharacterSprinting) {
+    if (mainCharacterObj.isPlayerCharacterSprinting) {
         sprintBtnYPos = -32;
         playerCharacterWalkSpeedModifier = 2.0;
         sprintBtnSS.style.setProperty('background-position-y', `${getPixelSize() * -32}px`)
     }
 
-    if (!playerCharacterSprinting) {
+    if (!mainCharacterObj.isPlayerCharacterSprinting) {
         sprintBtnYPos = 0;
         playerCharacterWalkSpeedModifier = 1.0;
         sprintBtnSS.style.setProperty('background-position-y', '0px')
+
     }
     // Set a moving var to true when moving from the other functions below
         // When moving var is true and so is sprinting
@@ -898,58 +1008,9 @@ function sprintToggle () {
 
 var upBtnYPos = 0; // Used for updating the sprite
 
-function walkUp () {
-    // Change the button image
-    upBtn.style.setProperty('background-position-y', `${(getPixelSize() * -40)}px`);
-
-    upBtnYPos = -32;
-
-    var dir = keys.Up;
-    if (dir && held_directions.indexOf(dir) === -1) {
-        held_directions.unshift(dir);
-    }
-}
-
-function walkUpCancel () {
-    // Reset the button image
-    upBtn.style.setProperty('background-position-y', `${(getPixelSize() * 0)}px`);
-
-    upBtnYPos = 0;
-
-    var dir = keys.Up;
-    var index = held_directions.indexOf(dir);
-    if (index > -1) {
-        held_directions.splice(index, 1);
-    }
-}
-
 downBtnYPos = 0; // Used for updating the sprite
 
-// Handle the event
-function walkDown () {
-    // Change the button image
-    downBtn.style.setProperty('background-position-y', `${(getPixelSize() * -32)}px`);
 
-    downBtnYPos = -32;
-
-    var dir = keys.Down;
-    if (dir && held_directions.indexOf(dir) === -1) {
-        held_directions.unshift(dir);
-    }
-}
-
-function walkDownCancel () {
-    // Reset the button image
-    downBtn.style.setProperty('background-position-y', `${(getPixelSize() * 0)}px`);
-
-    downBtnYPos = 0;
-
-    var dir = keys.Down;
-    var index = held_directions.indexOf(dir);
-    if (index > -1) {
-        held_directions.splice(index, 1);
-    }
-}
 
 
 
@@ -1073,7 +1134,7 @@ var lastFrameTimeStamp; // Currently used to get deltaTime
 var pixelSize;
 
 
-const step = () => {
+function MainLoop () {
 
     setTimeout(function () {
         // Used for getting the Delta time
@@ -1104,17 +1165,18 @@ const step = () => {
         tuber1Obj.float(tuberSpeed);
         tuber2Obj.float(tuberSpeed);
 
+        mainCharacterObj.animate(pixelSize); // Pass in pixel size to avoid multiple calls to getPixelSize
+
         playerCharacterSpeechController();
-        placeCharacter();
         greetPlayerCharacter(lastFrameTimeStamp);
         awfulSpeechDudeObj.playAwfulSpeech();
         playMailBoxScene(lastFrameTimeStamp);
 
         // Keep updating the background position based on the current set direction
-        ptGraderSpriteSheet.style.setProperty('background-position-y', `${(getPixelSize() * 16) * ptGraderDirection}px`);
-        sprintBtnSS.style.setProperty('background-position-y', `${getPixelSize() * sprintBtnYPos}px`);
-        upBtn.style.setProperty('background-position-y', `${getPixelSize() * upBtnYPos}px`);
-        downBtn.style.setProperty('background-position-y', `${getPixelSize() * downBtnYPos}px`);
+        ptGraderSpriteSheet.style.setProperty('background-position-y', `${(pixelSize * 20) * ptGraderDirection}px`);
+        sprintBtnSS.style.setProperty('background-position-y', `${pixelSize * sprintBtnYPos}px`);
+        upBtn.style.setProperty('background-position-y', `${pixelSize * upBtnYPos}px`);
+        downBtn.style.setProperty('background-position-y', `${pixelSize * downBtnYPos}px`);
 
         lastFrameTimeStamp = new Date().getTime(); // Updated every tick, is this correct?
         // It may be, since the time stamp would be after all the tick actions have been performed.
@@ -1123,16 +1185,11 @@ const step = () => {
     
     
     window.requestAnimationFrame(() => {
-        step();
+        MainLoop();
     })
 }
-step(); // Take the first step
+MainLoop(); // Start the main game loop
 
-// Check if the user is on mobile, if so, show the mobile controls
-if (isUserOnTouchDevice()) {
-    var allTouchBtns = document.querySelector(".allBtns");
-    allTouchBtns.style.setProperty("visibility", "visible");
-}
 
 //
 //
@@ -1146,6 +1203,12 @@ if (isUserOnTouchDevice()) {
 //
 //
 
+
+// Check if the user is on mobile, if so, show the mobile controls
+if (isUserOnTouchDevice()) {
+    var allTouchBtns = document.querySelector(".allBtns");
+    allTouchBtns.style.setProperty("visibility", "visible");
+}
 
 function isUserOnTouchDevice () {
     return (('ontouchstart' in window) ||

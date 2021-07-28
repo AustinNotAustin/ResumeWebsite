@@ -93,7 +93,7 @@ Speech Boxes */
 }
 
 .playerText {
-  top: calc(40 * var(--pixel-size));
+  top: calc(70 * var(--pixel-size));
   left: calc(80 * var(--pixel-size));
   opacity: 0;
 }
@@ -429,15 +429,19 @@ Character class and IDs */
   height: calc(var(--pixel-size) * 160);
 }
 
-.character[facing="right"] .characterSpritesheet {
+.character[walkDir="down"] .characterSpritesheet {
+  background-position-y: calc(var(--pixel-size) * 0);
+}
+
+.character[walkDir="right"] .characterSpritesheet {
   background-position-y: calc(var(--pixel-size) * -20);
 }
 
-.character[facing="up"] .characterSpritesheet {
+.character[walkDir="up"] .characterSpritesheet {
   background-position-y: calc(var(--pixel-size) * -40);
 }
 
-.character[facing="left"] .characterSpritesheet {
+.character[walkDir="left"] .characterSpritesheet {
   background-position-y: calc(var(--pixel-size) * -60);
 }
 
@@ -446,7 +450,23 @@ Character class and IDs */
 }
 
 .character[sprinting="true"] .characterSpritesheet {
-  animation: animate 0.3s steps(4) infinite;
+  animation: animate 0.4s steps(4) infinite;
+}
+
+.character[runDir="down"] .characterSpritesheet {
+  background-position-y: calc(var(--pixel-size) * -80);
+}
+
+.character[runDir="right"] .characterSpritesheet {
+  background-position-y: calc(var(--pixel-size) * -100);
+}
+
+.character[runDir="up"] .characterSpritesheet {
+  background-position-y: calc(var(--pixel-size) * -120);
+}
+
+.character[runDir="left"] .characterSpritesheet {
+  background-position-y: calc(var(--pixel-size) * -140);
 }
 
 /*
@@ -486,16 +506,16 @@ NPC content */
 }
 
 .soldier {
-  width: calc(var(--grid-cell) * 1);
-  height: calc(var(--grid-cell) * 1);
+  width: calc(var(--pixel-size) * 20);
+  height: calc(var(--pixel-size) * 20);
   position: absolute;
   overflow: hidden;
 }
 
 .soldierSpriteSheet {
   position: absolute;
-  width: calc(var(--grid-cell) * 4);
-  height: calc(var(--grid-cell) * 4);
+  width: calc(var(--pixel-size) * 80);
+  height: calc(var(--pixel-size) * 80);
 }
 
 .soldier1 {
@@ -503,8 +523,7 @@ NPC content */
 }
 
 .soldier1SpriteSheet {
-  background: url(/img/characters/main-character-running.png) no-repeat
-    no-repeat;
+  background: url(/img/characters/soldier-1-ss.png) no-repeat no-repeat;
   background-size: 100%;
   animation: animate 0.5s steps(4) infinite;
 }
@@ -514,7 +533,7 @@ NPC content */
 }
 
 .soldier2SpriteSheet {
-  background: url(/img/characters/soldier2.png) no-repeat no-repeat;
+  background: url(/img/characters/soldier-2-ss.png) no-repeat no-repeat;
   background-size: 100%;
   animation: animate 0.6s steps(4) infinite;
 }
@@ -526,9 +545,9 @@ NPC content */
 }
 
 .soldier3SpriteSheet {
-  background: url(/img/characters/soldier3.png) no-repeat no-repeat;
+  background: url(/img/characters/soldier-3-ss.png) no-repeat no-repeat;
   background-size: 100%;
-  background-position-y: calc(-3 * var(--grid-cell));
+  background-position-y: calc(-60 * var(--pixel-size));
 }
 
 .soldier4 {
@@ -538,9 +557,9 @@ NPC content */
 }
 
 .soldier4SpriteSheet {
-  background: url(/img/characters/soldier4.png) no-repeat no-repeat;
+  background: url(/img/characters/soldier-4-ss.png) no-repeat no-repeat;
   background-size: 100%;
-  background-position-y: calc(-3 * var(--grid-cell));
+  background-position-y: calc(-60 * var(--pixel-size));
 }
 
 .tuber {
@@ -653,17 +672,17 @@ Flag class and ID */
 
 .armyFlag {
   position: absolute;
-  width: calc(45 / 2 * var(--pixel-size));
+  width: calc(45 * var(--pixel-size));
   height: calc(70 * var(--pixel-size));
   overflow: hidden;
-  left: calc(255 * var(--pixel-size));
-  top: calc(170 * var(--pixel-size));
+  left: calc(260 * var(--pixel-size));
+  top: calc(156 * var(--pixel-size));
 }
 
 #armyFlagSS {
   animation: animate 0.8s steps(7) infinite;
-  width: calc(210 * var(--pixel-size));
-  /* ID width is calculated by class width * steps (ex: 45 * 2 = 192) */
+  width: calc(315 * var(--pixel-size));
+  /* ID width is calculated by class width * steps (ex: 45 * 2 = 90) */
   height: calc(70 * var(--pixel-size));
   background-size: 100%;
   background-image: url(/img/flag/FlagSheet.png);
@@ -701,17 +720,17 @@ Sign class and IDs */
 
 .sign {
   position: absolute;
-  width: calc(96 / 1.5 * var(--pixel-size));
-  height: calc(32 / 1.5 * var(--pixel-size));
+  width: calc(96 * var(--pixel-size));
+  height: calc(32 * var(--pixel-size));
   overflow: hidden;
 }
 
 .signSS {
   animation: animate 3s steps(2) infinite;
   width: calc(
-    192 / 1.5 * var(--pixel-size)
+    192 * var(--pixel-size)
   ); /* Sign width is calculated by width * steps (ex: 96 * 2 = 192) */
-  height: calc(96 / 1.5 * var(--pixel-size));
+  height: calc(96 * var(--pixel-size));
   background-size: 100%;
   background-repeat: no-repeat;
   background-image: url(/img/Signs/ArmySigns.png);
@@ -719,8 +738,8 @@ Sign class and IDs */
 
 .goDownSign {
   opacity: 0.8;
-  left: calc(208 * var(--pixel-size));
-  top: calc(200 * var(--pixel-size));
+  left: calc(192 * var(--pixel-size));
+  top: calc(184 * var(--pixel-size));
 }
 
 .goDownSignSS {
@@ -728,8 +747,8 @@ Sign class and IDs */
 }
 
 .armySign {
-  left: calc(270 * var(--pixel-size));
-  top: calc(170 * var(--pixel-size));
+  left: calc(240 * var(--pixel-size));
+  top: calc(236 * var(--pixel-size));
 }
 
 .armySignSS {
@@ -738,8 +757,8 @@ Sign class and IDs */
 }
 
 .cssSign {
-  left: calc(234 * var(--pixel-size));
-  top: calc(444 * var(--pixel-size));
+  left: calc(220 * var(--pixel-size));
+  top: calc(434 * var(--pixel-size));
 }
 
 .cssSignSS {
@@ -748,8 +767,8 @@ Sign class and IDs */
 }
 
 .htmlSign {
-  left: calc(236 * var(--pixel-size));
-  top: calc(454 * var(--pixel-size));
+  left: calc(222 * var(--pixel-size));
+  top: calc(447 * var(--pixel-size));
 }
 
 .htmlSignSS {
@@ -758,8 +777,8 @@ Sign class and IDs */
 }
 
 .javaSign {
-  left: calc(236 * var(--pixel-size));
-  top: calc(464 * var(--pixel-size));
+  left: calc(223 * var(--pixel-size));
+  top: calc(459 * var(--pixel-size));
 }
 
 .javaSignSS {
@@ -768,8 +787,8 @@ Sign class and IDs */
 }
 
 .mySqlSign {
-  left: calc(238 * var(--pixel-size));
-  top: calc(484 * var(--pixel-size));
+  left: calc(225 * var(--pixel-size));
+  top: calc(501 * var(--pixel-size));
 }
 
 .mySqlSignSS {
@@ -778,8 +797,8 @@ Sign class and IDs */
 }
 
 .pythonSign {
-  left: calc(242 * var(--pixel-size));
-  top: calc(494 * var(--pixel-size));
+  left: calc(227 * var(--pixel-size));
+  top: calc(488 * var(--pixel-size));
 }
 
 .pythonSignSS {
@@ -788,8 +807,8 @@ Sign class and IDs */
 }
 
 .javaScriptSign {
-  left: calc(248 * var(--pixel-size));
-  top: calc(504 * var(--pixel-size));
+  left: calc(239 * var(--pixel-size));
+  top: calc(475 * var(--pixel-size));
 }
 
 .javaScriptSignSS {
@@ -816,8 +835,8 @@ Sign class and IDs */
 }
 
 .nurseSign {
-  left: calc(180 * var(--pixel-size));
-  top: calc(1464 * var(--pixel-size));
+  left: calc(150 * var(--pixel-size));
+  top: calc(1458 * var(--pixel-size));
 }
 
 .nurseSignSS {
