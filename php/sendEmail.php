@@ -1,5 +1,6 @@
 <?php
 
+// Used to ban IPs if needed
 function getUserIPAddress() {  
     // From share internet  
     if (!empty($_SERVER['HTTP_CLIENT_IP'])) {  
@@ -19,23 +20,23 @@ function getUserIPAddress() {
     return $ip;  
 }
 
+// Simplified for extra security
 if (isset($_POST['name'])) {
     $name = (string)filter_input(INPUT_POST, 'name', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $email = (string)filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
     $message = (string)filter_input(INPUT_POST, 'message', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     
-    $emailTo = "austin@austinarledge.com";
+    $emailTo = "myEmailHere@email.here";
 
-    $subject = "Interactive Resume Message";
+    $subject = "Subject";
 
-    $headers = "From: austin@austinarledge.com";
-    $headers .= "\r\nReply-To: austin@austinarledge.com";
+    $headers = "From: website";
 
     $user_IP = getUserIPAddress();
 
-    $text = "New message from: ".$name."\n\nMessage: ".$message."\n\nContact Email: ".$emailFrom."\n\nIP Address: ".$user_IP;
+    $text = $message;
 
-    mail($emailTo, $subject, $text, $headers,'-faustin@austinarledge.com');
+    mail($emailTo, $subject, $text, $headers,'-fmyEmailHere@email.here');
     header("Location: ../?messageSent");
 }
 
