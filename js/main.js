@@ -1035,7 +1035,6 @@ function getPixelSize () {
 }
 
 // Disable CTRL + Scroll Wheel zooming
-
 document.addEventListener('wheel', (e) => {
     
     if (e.ctrlKey) e.preventDefault()
