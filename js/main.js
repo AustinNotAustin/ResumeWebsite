@@ -1,20 +1,14 @@
-// Reference to the HTML elements
+// Get the map/background
 const map = document.querySelector(".map");
 
+// Speed multipliers. Modifiers should be in multiples of 1
+const globalSpeedModifier = 1; // This controls every moving objects speed, this is more for debugging (i.e. multiply the speed by 2, 3, 10, ect...)
+var playerCharacterWalkSpeedModifier = 1; // Controls the playerCharacters speed, will get changed when sprinting
+const runnerSpeedModifier = 1; // Double this to double the runners speed, or adjust accordingly
+const floatSpeedModifier = 1; // Multiplies the tubers float speed
+const generatorNPCSpeedModifier = 1; // Multiplies the generator NPCs walking speed
 
-// Speed multipliers
-const globalSpeedModifier = 1;
-const globalSpeed = 60;
-var playerCharacterWalkSpeedModifier = 1;
-const runnerSpeedModifier = 0.5;
-const floatSpeedModifier = 5.2;
-const generatorNPCSpeedModifier = 0.5;
-
-// Player speeds
-var playerCharacterWalkSpeed; // Speed of player character movement
-var runnerSpeed;
-var floatSpeed;
-var generatorSpeed;
+const globalSpeed = 60; // This also controls every obects movement speed, but this should be left alone. Used for slightly adjusting the overall tempo
 
 
 //
@@ -43,55 +37,37 @@ function Tuber (tuberClass, tuberSheet) {
     
     // River/Tuber max and min x values
     const maxRiverX = 432;
-
-
-    // Get the pixel size each iteration to ensure the most accurate value is available
-    //var pixelSize = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--pixel-size'));
     
+    // x and y pos of the tubers
     this.x = 350;
     this.y = 430;
-    this.skin = 0;
     this.tuberClass = tuberClass;
     this.tuberSheet = tuberSheet;
     
-    var px;
-    var currentBG;
-    var bgNum = 0;
-    var count = 0;
+    var currentBG; // Used to select new character sprite to emulate a different person floating
+    var bgNum = 0; // Multiplies the new random NPC sprite by -24 to get the appropriate pixel size
 
     // Func to float the toooober down left
-    this.float = function (floatSpeedDelta) {
+    this.float = function (floatSpeedDelta, px) {
         
-        px = getPixelSize();
-        
-        // Move the toooober back to the right side if x == 0, reset the skin, and random y
+        // Move the toooober back to the right side if x == 0, reset the skin, and random y pos
         if (this.x <= 0) {
             currentBG = randomInt(0, 15);
             bgNum = currentBG * -24;
             this.x = maxRiverX;
             this.tuberSheet.style.setProperty("background-position-y", `${bgNum * px}px`);
             this.y = randomInt(400, 430); // Randomly select the y value from the range
-            // this.skin = randomInt(0, 3) * -22; // Get a random number (0-3, since there are 4 options) then multiple by -22 (for the px's)
         }
         
-        if (count == 100) {
-            this.y -= (0.2 * floatSpeedDelta);
-        }
-
-        if (count == 200) {
-            this.y += (0.2 * floatSpeedDelta);
-            count = 0;
-        }
-
-        count++;
-        
+        // If the x pos hits the river bend, make the tubers float straight left instead of down left
         if (this.x > 130) {
             this.y += (0.004 * floatSpeedDelta);
         }
 
+        // Make the tubers float down left
         this.x -= (0.02 * floatSpeedDelta);
-        this.tuberSheet.style.setProperty("background-position-y", `${bgNum * px}px`);
-        this.tuberClass.style.transform = `translate3d( ${this.x * px}px, ${this.y * px}px, 0)`;
+        this.tuberSheet.style.setProperty("background-position-y", `${bgNum * px}px`); // Update the sprite sheet to prevent resizing bugs
+        this.tuberClass.style.transform = `translate3d( ${this.x * px}px, ${this.y * px}px, 0)`; // Move the tuber
 
     }
 }
@@ -137,8 +113,6 @@ function Runner (runnerClass, runnerSpriteSheet, x, y) {
     var left = -140;
     var right = -100;
     
-    var px;
-    
     // Set their running limits
     // Left and right sides of the track
     var runnerLeftLimit = 44;
@@ -158,11 +132,7 @@ function Runner (runnerClass, runnerSpriteSheet, x, y) {
     
     
     // Make them run
-    this.run = function (speedDelta) {
-        
-        // Get the pixel size each iteration to ensure the most accurate value is available
-        px = getPixelSize();
-        
+    this.run = function (speedDelta, px) {
         
         // Check their x and y pos
         // 1 to 2 to 3 (Top Left and Top Middle)
@@ -238,7 +208,6 @@ function generatorNPC () {
     this.spriteSheet = document.querySelector(".soldier4SpriteSheet");
     this.divHolder = document.querySelector(".soldier4");
     this.y = 1;
-    var self = this;
     var isNPCPaused = false;
     var pauseStart = new Date().getTime();
     var pauseLimit = 4000;
@@ -317,211 +286,17 @@ let generatorNPCObj = new generatorNPC();
 //
 
 
-// Set the varying speeds for text to display
-var speeds = {
-    pause: 700,
-    slow: 140,
-    normal: 100,
-    fast: 50
-}
+function AwfulSpeechDude () {
+    var awfulSpeechJSON; // Define the JSON var in global scope
+    
+    fetch("awfulSpeech.json").then(response => response.json()) // Fetch it and make it a JSON
+    .then(response => { // Create a promise
+        awfulSpeechJSON = response; // Assign the promise value to the global scope var
+    });
+    
+    // Get the .text class
+    const container = document.querySelector(".text");
 
-var speech = [
-    { string: "UHM, HEY THERE, ", speed: speeds.normal },
-    { string: "EVERYONE, OUT THERE. ", speed: speeds.normal },
-    { string: "THANKS FOR COMING OUT TODAY. ", speed: speeds.normal },
-    { string: "EVEN THOUGH IT'S MANDATORY. ", speed: speeds.normal },
-    { string: "THANKS FOR BEING HERE ANYWAY. ", speed: speeds.normal },
-    { string: "I COULD USE SOME PRACTICE, ", speed: speeds.normal },
-    { string: "PRACTICE WITH MY SPEECH THAT IS. ", speed: speeds.fast },
-    { string: "SO YEAH, THANKS AGAIN. ", speed: speeds.normal },
-    { string: "HA HA ", speed: speeds.fast },
-    { string: "I SURE DID SAY THANKS A LOT. ", speed: speeds.normal },
-    { string: "RIGHT? ", speed: speeds.normal },
-    { string: "HA HA ", speed: speeds.fast },
-    { string: "KIND OF FUNNY. ", speed: speeds.fast },
-    { string: "I GUESS IT'S NOT THAT FUNNY. ", speed: speeds.fast },
-    { string: "WELL, UHH... ", speed: speeds.normal },
-    { string: "*COUGH* ", speed: speeds.fast },
-    { string: "THANKS FOR LETTING ME PRACTICE. ", speed: speeds.normal },
-    { string: "DANG, I SAID THANKS AGAIN. ", speed: speeds.normal },
-    { string: "WELL, I MEAN... ", speed: speeds.normal },
-    { string: "THANKS FOR LISTENING TO ME! ", speed: speeds.normal },
-    { string: "I SAID IT AGAIN... ", speed: speeds.fast },
-    { string: "THANKS FOR LETTING ME PRACTICE, ", speed: speeds.normal },
-    { string: "MY SPEECH... ", speed: speeds.slow },
-    { string: "IN FRONT OF YOU... ", speed: speeds.slow },
-    { string: "WHILE YOU LISTEN TO ME... ", speed: speeds.slow },
-    { string: "SOME OF YOU... ", speed: speeds.slow },
-    { string: "NOT THAT IT'S A PROBLEM THOUGH! ", speed: speeds.normal },
-    { string: "I DON'T CARE IF YOU LISTEN! ", speed: speeds.normal },
-    { string: "WAIT! ", speed: speeds.fast },
-    { string: "YES I DO, I DO CARE! ", speed: speeds.fast },
-    { string: "IT'S JUST THAT, ", speed: speeds.normal },
-    { string: "IF YOU DON'T LISTEN ", speed: speeds.normal },
-    { string: "TO MY SPEECH ", speed: speeds.normal },
-    { string: "I WON'T GET MAD OR ANYTHING ", speed: speeds.normal },
-    { string: "SINCE IT'S JUST PRACTICE. ", speed: speeds.normal },
-    { string: "NOT THAT I GET MAD OFTEN ", speed: speeds.fast },
-    { string: "OR ANYTHING LIKE THAT ", speed: speeds.normal },
-    { string: "IT'S JUST THAT ", speed: speeds.slow },
-    { string: "YOU'RE FREE TO DO WHAT YOU WANT ", speed: speeds.normal },
-    { string: "SINCE IT'S A FREE COUNTRY AND ALL ", speed: speeds.normal },
-    { string: "WELL, YOU DO HAVE TO BE HERE ", speed: speeds.normal },
-    { string: "KIND OF ", speed: speeds.normal },
-    { string: "LIKE, IF YOU LEAVE ", speed: speeds.normal },
-    { string: "YOU WON'T GET ARRESTED ", speed: speeds.normal },
-    { string: "FOR THAT ", speed: speeds.normal },
-    { string: "PROBABLY ", speed: speeds.normal },
-    { string: "RIGHT. ", speed: speeds.normal },
-    { string: "WELL. ", speed: speeds.slow },
-    { string: "*COUGH* ", speed: speeds.fast },
-    { string: "I SHOULD, ", speed: speeds.normal },
-    { string: "UH... ", speed: speeds.slow },
-    { string: "I SHOULD START THE SPEECH. ", speed: speeds.normal },
-    { string: "SINCE I THINK IT'LL BE RECORDED ", speed: speeds.normal },
-    { string: "THAT WAY THEY CAN USE IT LATER ", speed: speeds.normal },
-    { string: "FOR THINGS LIKE SENIOR VIDEOS ", speed: speeds.normal },
-    { string: "AND PUT IT UP ON YOUTUBE. ", speed: speeds.normal },
-    { string: "MAYBE THEY'LL MAKE BLOOPERS ", speed: speeds.fast },
-    { string: "OR FUNNY MOMENTS ", speed: speeds.normal },
-    { string: "OR OTHER COOL VIDEOS OF US! ", speed: speeds.normal },
-    { string: "THAT'D BE SO COOL. ", speed: speeds.slow },
-    { string: "WAIT! ", speed: speeds.fast },
-    { string: "DO YOU THINK THAT ", speed: speeds.fast },
-    { string: "THEY ALREADY STARTED RECORDING?! ", speed: speeds.fast },
-    { string: "OH NO! ", speed: speeds.fast },
-    { string: "I HAVEN'T SAID THE SPEECH YET! ", speed: speeds.fast },
-    { string: "HOW LONG DO YOU THINK IT'S BEEN? ", speed: speeds.fast },
-    { string: "THEY'VE PROBABLY RECORDED IT ALL! ", speed: speeds.fast },
-    { string: "OH BOY, THAT'S A LOT OF VIDEO! ", speed: speeds.normal },
-    { string: "I HOPE THEY HAVE A BIG HARD DRIVE. ", speed: speeds.normal },
-    { string: "OR MAYBE A SPARE DRIVE. ", speed: speeds.normal },
-    { string: "LIKE A BACK UP ONE. ", speed: speeds.slow },
-    { string: "JUST IN CASE THEY NEED A BUNCH OF ", speed: speeds.normal },
-    { string: "STORAGE FOR LONG VIDEOS ", speed: speeds.normal },
-    { string: "OR LONG SPEECHES ", speed: speeds.slow },
-    { string: "LIKE THIS SPEECH CURRENTLY IS. ", speed: speeds.normal },
-    { string: "IT WASN'T SUPPOSED TO BE LONG. ", speed: speeds.normal },
-    { string: "I HONESTLY DIDN'T EVEN ", speed: speeds.normal },
-    { string: "WRITE THAT MUCH. ", speed: speeds.normal },
-    { string: "MY SPEECH IS ONLY LIKE A PARAGRAPH ", speed: speeds.normal },
-    { string: "A SINGLE PARAGRAPH ", speed: speeds.normal },
-    { string: "SO LIKE, 4-5 SENTENCES ", speed: speeds.normal },
-    { string: "8-16 WORDS PER SENTENCE OR SO ", speed: speeds.normal },
-    { string: "WHICH IS 32-80 WORDS IN TOTAL ", speed: speeds.normal },
-    { string: "THAT'S IT ", speed: speeds.normal },
-    { string: "LESS THAN 100 WORDS AND DONE ", speed: speeds.normal },
-    { string: "YEAH ", speed: speeds.normal },
-    { string: "SO... ", speed: speeds.slow },
-    { string: "UH... ", speed: speeds.slow },
-    { string: "I SHOULD START IT, RIGHT? ", speed: speeds.normal },
-    { string: "LET ME FLIP THE PAPER ", speed: speeds.normal },
-    { string: "OH ", speed: speeds.normal },
-    { string: "COME ON ", speed: speeds.normal },
-    { string: "THE PAGE IS STICKING TO MY HANDS ", speed: speeds.normal },
-    { string: "MY HANDS ARE KIND OF CLAMY ", speed: speeds.normal },
-    { string: "PROBABLY BECAUSE IT'S SO HOT OUT ", speed: speeds.normal },
-    { string: "I'M HOT ", speed: speeds.normal },
-    { string: "LIKE REALLY HOT ", speed: speeds.fast },
-    { string: "THAT SOUNDS WEIRD ", speed: speeds.normal },
-    { string: "I MEAN, I'M HOT ", speed: speeds.normal },
-    { string: "IN A TEMPERATURE KIND OF WAY ", speed: speeds.normal },
-    { string: "NOT LIKE A PHYSICAL KIND OF WAY ", speed: speeds.normal },
-    { string: "NOT TO SAY I'M UGLY OR ANYTHING ", speed: speeds.normal },
-    { string: "I DON'T THINK I'M UGLY ", speed: speeds.slow },
-    { string: "I'VE BEEN TOLD I'M NOT UGLY ", speed: speeds.slow },
-    { string: "BY PEOPLE ", speed: speeds.normal },
-    { string: "OTHER THAN MY MOM ", speed: speeds.slow },
-    { string: "I'M SURE YOU COULD HAVE ", speed: speeds.normal },
-    { string: "GUESS THAT THOUGH ", speed: speeds.normal },
-    { string: "EVERYONE'S MOM SAYS NICE THINGS ", speed: speeds.normal },
-    { string: "WELL, NOT EVERY MOM ", speed: speeds.slow },
-    { string: "I GUESS... ", speed: speeds.slow },
-    { string: "I DON'T KNOW EVERY MOM ", speed: speeds.normal },
-    { string: "SOME MOMS COULD BE MEAN ", speed: speeds.normal },
-    { string: "LIKE THEY MIGHT CALL OTHERS UGLY ", speed: speeds.normal },
-    { string: "OR MAYBE THEY'RE MEAN IN TRAFFIC ", speed: speeds.normal },
-    { string: "LIKE WHEN ANOTHER DRIVER AT A TURN ", speed: speeds.normal },
-    { string: "GOT THERE 2ND AND YOU GOT THERE 1ST ", speed: speeds.normal },
-    { string: "YOU KNOW IT'S YOUR TURN TO GO, RIGHT? ", speed: speeds.normal },
-    { string: "BUT THEN THEY GO INSTEAD OF YOU. ", speed: speeds.normal },
-    { string: "THAT'S ANNOYING. ", speed: speeds.normal },
-    { string: "LIKE, I WAITED MY TURN TO TURN, ", speed: speeds.fast },
-    { string: "YOU KNOW? ", speed: speeds.normal },
-    { string: "I WAS AT THIS STOP SIGN BEFORE YOU ", speed: speeds.fast },
-    { string: "AND THEN YOU GOT HERE ", speed: speeds.normal },
-    { string: "I DIDN'T WAIVE YOU ON TO GO ", speed: speeds.fast },
-    { string: "YOU WENT ON YOUR OWN ACCORD ", speed: speeds.fast },
-    { string: "I'M JUST WAITING TO TURN ", speed: speeds.normal },
-    { string: "I WANTED TO MAKE SURE IT'S CLEAR ", speed: speeds.normal },
-    { string: "LOOK BOTH WAYS, RIGHT!? ", speed: speeds.normal },
-    { string: "I'M A SAFE DRIVER, LOOKING BOTH WAYS ", speed: speeds.normal },
-    { string: "YOU'RE AN UNSAFE DRIVER ", speed: speeds.normal },
-    { string: "GOING BEFORE ME AND STUFF. ", speed: speeds.normal },
-    { string: "SHEESH! ", speed: speeds.normal },
-    { string: "WELL... ", speed: speeds.slow },
-    { string: "NOT \"YOU\" SPECIFICALLY ", speed: speeds.slow },
-    { string: "I MEAN OTHER PEOPLE ", speed: speeds.normal },
-    { string: "IN THIS SCENARIO THAT I JUST MADE UP ", speed: speeds.normal },
-    { string: "NOT THAT IT'S FAKE ", speed: speeds.fast },
-    { string: "BECAUSE I'VE BEEN IN THAT SITUATION ", speed: speeds.normal },
-    { string: "AND IT'S REAL AT THAT TIME. ", speed: speeds.normal },
-    { string: "RIGHT NOW THOUGH I DIDN'T HAVE ", speed: speeds.normal },
-    { string: "AN EXACT EVENT IN MIND ", speed: speeds.normal },
-    { string: "I HAD A GENERALIZATION INSTEAD ", speed: speeds.normal },
-    { string: "YOU KNOW WHAT I MEAN? ", speed: speeds.normal },
-    { string: "RIGHT... ", speed: speeds.slow },
-    { string: "UH... ", speed: speeds.slow },
-    { string: "IS ANYONE ELSE HOT? ", speed: speeds.normal },
-    { string: "IT FEELS PRETTY HOT TO ME. ", speed: speeds.normal },
-    { string: "I'M SWEATING A LITTLE BIT. ", speed: speeds.normal },
-    { string: "I SHOULD'VE BROUGHT MY WATER BOTTLE. ", speed: speeds.normal },
-    { string: "I’M PARCHED RIGHT NOW. ", speed: speeds.normal },
-    { string: "I DIDN'T PUT IT IN THE FRIDGE THOUGH, ", speed: speeds.normal },
-    { string: "SO IT WASN'T COLD HOW I LIKE IT. ", speed: speeds.normal },
-    { string: "I PREFER FRIDGE TEMP WATER OVER ICED. ", speed: speeds.normal },
-    { string: "I THINK IT'S THE ICE CUBES ", speed: speeds.normal },
-    { string: "I DON'T REALLY ENJOY THE ICE CUBES ", speed: speeds.normal },
-    { string: "NOT THAT I EAT ICE CUBES PER SE ", speed: speeds.normal },
-    { string: "BUT I CAN TASTE THE METLED CUBES ", speed: speeds.normal },
-    { string: "WHEN THEY MELT IN MY DRINK ", speed: speeds.normal },
-    { string: "OVER THE SPAN OF THE DAY ", speed: speeds.normal },
-    { string: "AS I SIP ON MY WATER ", speed: speeds.normal },
-    { string: "I THINK IT'S MY FREEZER. ", speed: speeds.normal },
-    { string: "I THINK THE FREEZER MAKES GROSS ICE ", speed: speeds.normal },
-    { string: "IT MIGHT BE THE ICE MAKER ACTUALLY. ", speed: speeds.normal },
-    { string: "I SHOULD HAVE THE FILTER REPLACED. ", speed: speeds.normal },
-    { string: "THAT WOULD PROBABLY HELP A BIT ", speed: speeds.normal },
-    { string: "I CAN'T REMEMBER THE LAST TIME I REPLACE IT. ", speed: speeds.normal },
-    { string: "SHEESH! THAT'S PRETTY GROSS, HUH!? ", speed: speeds.fast },
-    { string: "HA HA… ", speed: speeds.normal },
-    { string: "YEAH. ", speed: speeds.slow },
-    { string: "GROSS. ", speed: speeds.normal },
-    { string: "NOT SAYING I’M GROSS. ", speed: speeds.fast },
-    { string: "THE FILTER IS GROSS. ", speed: speeds.fast },
-    { string: "NOT SAYING YOUR GROSS EITHER ", speed: speeds.fast },
-    { string: "IF YOU DON’T CHANGE YOUR FILTER OFTEN ", speed: speeds.fast },
-    { string: "FILTERS OFTEN GET OVERLOOKED. ", speed: speeds.normal },
-    { string: "I IMAGINE… ", speed: speeds.slow },
-    { string: "I DON’T ACTUALLY HAVE FACTS ON THAT ", speed: speeds.normal },
-    { string: "BUT IT SOUNDS RIGHT ", speed: speeds.normal },
-    { string: "SO… ", speed: speeds.slow },
-    { string: "UH… ", speed: speeds.slow },
-    { string: "WHAT PAGE WAS I ON AGAIN? ", speed: speeds.normal },
-    { string: "HOLD ON ONE SEC. ", speed: speeds.normal },
-    { string: "LET ME JUST FIND IT. ", speed: speeds.normal },
-    { string: "HOW MANY PAPERS DO I HAVE? ", speed: speeds.normal },
-    { string: "ARE THESE INSURANCE DOCUMENTS? ", speed: speeds.normal },
-    { string: "OH. ", speed: speeds.normal },
-    { string: "THEY’RE EXPIRED. ", speed: speeds.normal },
-    { string: "I SHOULD PROBABLY GET ON THAT. ", speed: speeds.normal },
-    { string: "… ", speed: speeds.normal },
-]
-
-// Get the .text class
-var container = document.querySelector(".text");
-
-function AwfulSpeechDude () {    
     this.timeSinceLastMessage = 0; // Difference between lastMessageTime and now
     var letters = [];
     this.isPlayerCharacterReadyForSpeech = false;
@@ -529,9 +304,11 @@ function AwfulSpeechDude () {
     var self = this;
     
     var speechLine = 0; // Current sentence number for the speech
-    var previousDelay = (speech[speechLine].speed * speech[speechLine].string.length) * 1.5; // Post speech sentence delay
+    var previousDelay; 
     
     this.playAwfulSpeech = function () {
+        
+
         this.timeSinceLastMessage = nowTime - lastMessageTime; // Time since the last speech message compared to nowTime
 
         // If timeSinceLastMessage doesn't have a value yet
@@ -544,12 +321,18 @@ function AwfulSpeechDude () {
         // If player is ready (meaning he's past Y 1800 | See placeCharacter()) and
         // If the current sentence is less than the total number of sentences and
         // If the person isn't already speaking: continue
-        if (this.isPlayerCharacterReadyForSpeech && speechLine < speech.length && !(this.isAMUNPCSpeaking)) {
+        if (this.isPlayerCharacterReadyForSpeech && speechLine < awfulSpeechJSON.speech.length && !(this.isAMUNPCSpeaking)) {
+
+            if (previousDelay == undefined) {
+                previousDelay = (awfulSpeechJSON.speech[speechLine].speed * awfulSpeechJSON.speech[speechLine].string.length) * 1.5; // Post speech sentence delay
+            }
+
             // If the line that the speaker is on, is past the first line
             if (speechLine > 0) {
                 // Get the speech speed - 1 index to match the delay with the sentence speed
                 // Otherwise it'd be for the next line speed which may be different
-                previousDelay = (speech[speechLine-1].speed * speech[speechLine-1].string.length) * 1.5;
+                //previousDelay = (speech[speechLine-1].speed * speech[speechLine-1].string.length) * 1.5;
+                previousDelay = (awfulSpeechJSON.speech[speechLine-1].speed * awfulSpeechJSON.speech[speechLine-1].string.length) * 1.5;
             }
             
             // If the previousDelay timer has been met or exceeded by timeSinceLastMessage
@@ -563,17 +346,18 @@ function AwfulSpeechDude () {
         }
     }
 
+    // This handles each line of the JSON (Give each line to the displaySpeechTextLetter one at a time to be displayed)
     this.playSpeech = function (line) {
         this.line = line;
 
-        speech[this.line].string.split("").forEach(letter => {
+        awfulSpeechJSON.speech[this.line].string.split("").forEach(letter => {
             var span = document.createElement("span");
             span.textContent = letter;
             container.appendChild(span);
         
             letters.push({
                 span: span,
-                delayAfter: speech[this.line].speed,
+                delayAfter: awfulSpeechJSON.speech[this.line].speed,
                 isSpace: letter === " ",
             })
         })
@@ -581,6 +365,7 @@ function AwfulSpeechDude () {
         this.displaySpeechTextLetter(letters);
     }
 
+    // This handles each letter of each line of the JSON (Displays the letters one at a time)
     this.displaySpeechTextLetter = function (letterList) {
         var next = letterList.splice(0, 1)[0];
         next.span.classList.add("revealed");
@@ -628,7 +413,10 @@ var greetingDelay; // Used to get the difference between message played time and
 var greetingFinished = false; // If true, this function won't be called anymore
 var ptGraderDirection = -3;
 
-function greetPlayerCharacter (nowTime) {
+function greetPlayerCharacter (nowTime, pixelSize) {
+
+    ptGraderSpriteSheet.style.setProperty('background-position-y', `${(pixelSize * 20) * ptGraderDirection}px`);
+
 
     if (!(greetingFinished)) {
 
@@ -1082,7 +870,7 @@ function playerCharacterSpeak (lineNum) {
 
         playerCharacterLetters.push({
             span: span,
-            delayAfter: speeds.normal,
+            delayAfter: "100",
             isSpace: letter === " ",
         })
     })
@@ -1131,8 +919,13 @@ var deltaTime; // Currently unused
 var lastMessageTime; // Time of the last speech message occurred 
 var nowTime = new Date().getTime(); // Now, updated every tick below
 var lastFrameTimeStamp; // Currently used to get deltaTime
-var pixelSize;
+var pixelSize; // Used to store the current pixel size based on the users device width & zoom
 
+// Speed vars to be used for their respective delta times. No value yet as delta time speed will be assigned accordingly in the main loop
+var playerCharacterWalkSpeed; // Speed of player character movement
+var runnerSpeed;
+var floatSpeed;
+var generatorSpeed;
 
 function MainLoop () {
 
@@ -1151,36 +944,38 @@ function MainLoop () {
         // Set the player characters speed
         playerCharacterWalkSpeed = playerCharacterWalkSpeedModifier * deltaTime * globalSpeed * globalSpeedModifier;
         // Set the runner NPCs speed
-        runnerSpeed = runnerSpeedModifier * deltaTime * globalSpeed * globalSpeedModifier;
+        runnerSpeed = (runnerSpeedModifier * deltaTime * globalSpeed * globalSpeedModifier) * 0.5; // Slow them down a bit, they were running laps way too fast
         // Set the generator NPCs speed
-        generatorSpeed = generatorNPCSpeedModifier * deltaTime * globalSpeed * globalSpeedModifier;
-        // Set the tuber NPCs speed
-        tuberSpeed = floatSpeedModifier * deltaTime * globalSpeed * globalSpeedModifier;
+        generatorSpeed = (generatorNPCSpeedModifier * deltaTime * globalSpeed * globalSpeedModifier) * 0.5; // * by 0.5 to get an appropriate looking speed
 
-        runner1Obj.run(runnerSpeed);
-        runner2Obj.run(runnerSpeed);
+        // Set the tuber NPCs speed
+        // * by 5.2 to get the speed my wife said looks good (happy wife == happy life // cause she'll feed me mainly)
+        tuberSpeed = (floatSpeedModifier * deltaTime * globalSpeed * globalSpeedModifier) * 5.2;
+
+        runner1Obj.run(runnerSpeed, pixelSize);
+        runner2Obj.run(runnerSpeed, pixelSize);
 
         generatorNPCObj.animate(generatorSpeed, lastFrameTimeStamp, pixelSize);
 
-        tuber1Obj.float(tuberSpeed);
-        tuber2Obj.float(tuberSpeed);
+        tuber1Obj.float(tuberSpeed, pixelSize);
+        tuber2Obj.float(tuberSpeed, pixelSize);
 
         mainCharacterObj.animate(pixelSize); // Pass in pixel size to avoid multiple calls to getPixelSize
 
         playerCharacterSpeechController();
-        greetPlayerCharacter(lastFrameTimeStamp);
+        greetPlayerCharacter(lastFrameTimeStamp, pixelSize); // Check if it's time to greet & also update the sprite pixel size
         awfulSpeechDudeObj.playAwfulSpeech();
         playMailBoxScene(lastFrameTimeStamp);
 
         // Keep updating the background position based on the current set direction
-        ptGraderSpriteSheet.style.setProperty('background-position-y', `${(pixelSize * 20) * ptGraderDirection}px`);
+        // I don't have a place for the GUI buttons to be placed so their pxs will just be updated here
         sprintBtnSS.style.setProperty('background-position-y', `${pixelSize * sprintBtnYPos}px`);
         upBtn.style.setProperty('background-position-y', `${pixelSize * upBtnYPos}px`);
         downBtn.style.setProperty('background-position-y', `${pixelSize * downBtnYPos}px`);
 
         lastFrameTimeStamp = new Date().getTime(); // Updated every tick, is this correct?
         // It may be, since the time stamp would be after all the tick actions have been performed.
-        
+
     }, 1000 / FPS);
     
     
