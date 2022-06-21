@@ -17,8 +17,17 @@
         <meta name="description" content="An ongoing project" />
         <meta name="author" content="Austin Arledge" />
         <meta name="viewport" content="width=device-width, user-scalable=no" />
+
+        <link rel="apple-touch-icon" sizes="180x180" href="img/favicon/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="img/favicon/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="img/favicon/favicon-16x16.png">
+
         <link rel="stylesheet" href="css/style.css" />
         <script defer type="text/javascript" src="js/main.js"></script>
+        <!-- h Captcha custom class -->
+        <script defer type="text/javascript" src="js/hCaptcha.js"></script>
+        <!-- h Captcha CDN -->
+        <script src='https://js.hcaptcha.com/1/api.js' async defer></script>
     </head>
 
     <body>
@@ -234,7 +243,7 @@
 
             <!-- Form Section -->
 
-            <form class="pixelArt formLetterController" action="/php/sendEmail.php" method="post">
+            <form id="message-form" class="pixelArt formLetterController" action="/php/sendEmail.php" method="post">
                 <!-- Letter Form for user to send me a message -->
                 <div class="pixelArt letterForm"></div>
                 
@@ -250,6 +259,9 @@
                 <label class="formText formNameLabel" for="name">FROM,</label>
                 <input class="formNameField speechBubble" type="text" name="name" id="name" maxlength="25" placeholder="ENTER YOUR NAME HERE!" required>
                 
+                <!-- h Captcha -->
+                <div class="h-captcha h-captcha-custom" data-sitekey="--------------------> YOUR SITE KEY HERE! <--------------------"></div>
+
                 <input class="formText submitFormLetter" type="submit" value="SUBMIT">
             </form>
             

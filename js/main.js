@@ -728,6 +728,14 @@ var keys = {
     Down: directions.down,
     Left: directions.left,
     Right: directions.right,
+    w: directions.up,
+    s: directions.down,
+    a: directions.left,
+    d: directions.right,
+    W: directions.up,
+    S: directions.down,
+    A: directions.left,
+    D: directions.right,
 }
 
 

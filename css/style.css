@@ -249,10 +249,17 @@ Mailbox and Letter/Form */
   visibility: hidden;
 }
 
+.h-captcha-custom {
+  position: absolute !important;
+  top: calc(140 * var(--pixel-size)) !important;
+  left: calc(37 * var(--pixel-size)) !important;
+  max-width: calc(30 * var(--pixel-size)) !important;
+}
+
 .submitFormLetter {
   background-color: whitesmoke;
   top: calc(144 * var(--pixel-size));
-  left: calc(126 * var(--pixel-size));
+  left: calc(144 * var(--pixel-size));
   font-family: "pixelFont", "Sora", monospace;
   padding: 0.7em;
   padding-top: 0em;
@@ -481,7 +488,9 @@ Character class and IDs */
 
 NPC content */
 
-.doggo {
+/* I haven't added doggos yet, :( */
+
+/* .doggo {
   visibility: hidden;
   width: calc(30 * var(--pixel-size));
   height: calc(30 * var(--pixel-size));
@@ -499,7 +508,7 @@ NPC content */
 .doggo1 {
   top: calc(800 * var(--pixel-size));
   left: calc(300 * var(--pixel-size));
-}
+} */
 
 .doggo1SpriteSheet {
   animation: animate 0.5s steps(4) infinite;
