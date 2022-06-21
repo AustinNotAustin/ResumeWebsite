@@ -1,5 +1,5 @@
 # ResumeWebsite
-Website with my interactive resume and soon to be standard resume
+Website with my interactive resume
 
 
 This project is my version of a website resume. There is currently an interactive resume where the user can play as me and check my mail.
