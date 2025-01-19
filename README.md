@@ -13,3 +13,5 @@ lmao, everyone asks
 I will probably never touch this again, but it was very fun and I'm happy with the results.
 [Check it out!](https://austinarledge.com/)
 ![image](https://github.com/user-attachments/assets/14b91327-6fb7-407c-942b-28576577566e)
+
+I did all the pixel art and it took ages.
